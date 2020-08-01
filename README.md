@@ -66,3 +66,25 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `yarn build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+## Screens :
+1. Splashscreen: Logo, start button, instructions?
+2. Main Game: Interface w:
+    - Question Display
+    - 4 Answers display
+    - Lifelines display (50:50, paf, aud)
+    - Audience thing/phone a friend display
+    - Cash prizes list (like onscreen in show) showing cur q value and cur pot value (if player were to quit)
+3. Results display: Display money won, replay button
+
+## Game Loop:
+1. Splashscreen -> press start
+2. Main game loop begins. Init questions (load from API). Init display. Load first q, answers.
+3. User may either:
+   1. Use a lifeline
+      1. tbd
+   2. Choose an answer
+      1. if correct, adjust winnings, display next q (if no next q, special millionaire results screen)
+      2. if incorrect, change screen to *results display*
+   3. Leave w their current winnings
+      1. Show *results screen*
