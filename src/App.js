@@ -25,47 +25,16 @@ function App() {
   const [curMinCash, setCurMinCash] = useState(0);
   // Toggling this triggers the use effect which fetches new questions
   const [gameOver, setGameOver] = useState(false);
+  // Governs whether or not answer buttons should be active
+  const [answerButtonsDisabled, setAnswerButtonsDisabled] = useState(false);
 
   // Generates query strings, queries the API, and sets the app questions as per the API response
   useEffect(() => {
     // console.log("HOOK load questions executing ... ")
-    const loadNewQuestions = () => {
-
-      // generate query text based on number of questions of specified difficulty required
-      const queries = generateApiQueries({ easy: NUM_EASY_QS, medium: NUM_MED_QS, hard: NUM_HARD_QS});
-  
-      queries.forEach(query => {
-        axios.get(query)
-          .then(res => {
-            //extract the questions into an array
-            let qsReceived = res.data.results;
-  
-            // convert the responses into Question objects
-            qsReceived = qsReceived.map(q => {
-              return new Question(decodeStr(q.question), decodeStr(q.correct_answer), q.incorrect_answers.map(str => decodeStr(str)), q.difficulty);
-            });
-  
-            // console.log(qsReceived);
-            const difficulty = qsReceived[0].difficulty;
-            // console.log("received q's for difficulty: "+difficulty);
-  
-            // push the Question objects to the question pool
-            setQuestions(questions => [...questions, ...qsReceived]);
-  
-            // we're finished loading questions at the current difficulty level
-            // console.log(JSON.stringify(loadingStates))
-            // console.log("Setting difficulty for "+difficulty+" ... ")
-            setloadingStates(loadingStates => ({...loadingStates, [difficulty]: false}));
-  
-          })
-      });
-    }
-
+    
     loadNewQuestions();
 
-    if (gameOver) setGameOver(false);
-
-  }, [gameOver]);
+  }, []);
 
   // prompt update of question displayed; occurs once when loading complete to load first question, then again whenever the curQuestionIndex is modified (i.e. by answering a question)
   useEffect(() => {
@@ -88,22 +57,67 @@ function App() {
     return textArea.value;
   }
 
+  const loadNewQuestions = () => {
+
+    // generate query text based on number of questions of specified difficulty required
+    const queries = generateApiQueries({ easy: NUM_EASY_QS, medium: NUM_MED_QS, hard: NUM_HARD_QS});
+
+    queries.forEach(query => {
+      axios.get(query)
+        .then(res => {
+          //extract the questions into an array
+          let qsReceived = res.data.results;
+
+          // convert the responses into Question objects
+          qsReceived = qsReceived.map(q => {
+            return new Question(decodeStr(q.question), decodeStr(q.correct_answer), q.incorrect_answers.map(str => decodeStr(str)), q.difficulty);
+          });
+
+          // console.log(qsReceived);
+          const difficulty = qsReceived[0].difficulty;
+          // console.log("received q's for difficulty: "+difficulty);
+
+          // push the Question objects to the question pool
+          setQuestions(questions => [...questions, ...qsReceived]);
+
+          // we're finished loading questions at the current difficulty level
+          // console.log(JSON.stringify(loadingStates))
+          // console.log("Setting difficulty for "+difficulty+" ... ")
+          setloadingStates(loadingStates => ({...loadingStates, [difficulty]: false}));
+
+        })
+    });
+  }
+
+
   const reload = () => {
     console.log("RELOADING")
     setQuestions([]);
     setCurQuestion(null);
     setCurQuestionIndex(0);
     setloadingStates({easy: true, medium: true, hard: true});
-    setGameOver(gameOver => !gameOver);
+    setCurCash(0);
+    setCurMinCash(0);
+    setAnswerButtonsDisabled(false);
+    setGameOver(false);
+    loadNewQuestions();
+    // setGameOver(gameOver => !gameOver);
   }
 
   const handleSelection = (answeredCorrectly) => {
+
     if (answeredCorrectly) {
+      
       console.log("CORRECTLY ANSWERED");
       gotoNextQuestion();
+
     } else {
+
       console.log("INCORRECTLY ANSWERED");
-      reload();
+      setGameOver(true);
+      setAnswerButtonsDisabled(true);
+      //reload();
+
     }
   }
 
@@ -137,6 +151,7 @@ function App() {
             correctAnswer={curQuestion.correctAnswer}
             incorrectAnswers={curQuestion.incorrectAnswers}
             handleSelection={handleSelection}
+            answerButtonsDisabled={answerButtonsDisabled}
           />
           <SidePanel 
             increments={PRIZE_MONEY_INCREMENTS}
@@ -144,6 +159,7 @@ function App() {
             curQuestionIndex={curQuestionIndex}
             numQs={NUM_QS}
             />
+            {console.log(gameOver)}
           {gameOver && <p><b>Game Over!</b></p>}
           <button onClick={() => reload()}>reload</button>
           <p>Current Cash: <b>{curCash}</b>, Cur Min Cash: <b>{curMinCash}</b></p>

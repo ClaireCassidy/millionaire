@@ -3,7 +3,7 @@ import AnswerButton from './AnswerButton'
 
 // @TODO:
 // Merge gotoNextQuestion and incorrectAnswerSelected into single function 'handleSelection'
-export default function QuestionDisplay({ question, correctAnswer, incorrectAnswers, handleSelection}) {
+export default function QuestionDisplay({ question, correctAnswer, incorrectAnswers, handleSelection, answerButtonsDisabled}) {
 
     const [answers, setAnswers] = useState(null);
     const [lastAnswerCorrect, setLastAnswerCorrect] = useState(null);
@@ -52,7 +52,7 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
     return (
         <>
             {/* {console.log("Question Display rendering")} */}
-
+            {/* {console.log("answer buttons ARE "+(answerButtonsDisabled ? "" : "NOT") + " disabled")} */}
 
             <div><p>{question}</p></div>
 
@@ -63,11 +63,15 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
                         answer={answer}
                         isCorrect={answer === correctAnswer}
                         selectAnswer={selectAnswer}
+                        disabled={answerButtonsDisabled}
                         />
                 );
             })}
 
-            {lastAnswerCorrect != null ? (lastAnswerCorrect === true ? <p><b>Correct!</b> The answer was "<i>{lastAnswerText}</i>".</p> : <p><b>Incorrect!</b> The correct answer was "<i>{lastAnswerText}</i>".</p>) : <></>}
+            {/* {lastAnswerCorrect != null 
+                ? (lastAnswerCorrect === true 
+                    ? <p><b>Correct!</b> The answer was "<i>{lastAnswerText}</i>".</p> 
+                    : <p><b>Incorrect!</b> The correct answer was "<i>{lastAnswerText}</i>".</p>) : <></>} */}
         </>
     );
 

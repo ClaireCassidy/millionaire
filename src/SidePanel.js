@@ -19,7 +19,7 @@ export default function SidePanel({increments, safeIndices, curQuestionIndex, nu
                             <b>{prettifyNumber(elem)+((numQs - 1 - index) === curQuestionIndex ? " <" : "")}</b>
                         </li>) 
                     : (<li key={index}>
-                            {prettifyNumber(elem)+((numQs - 1 - index) === curQuestionIndex ? " <" : "")}
+                            {prettifyNumber(elem)+((numQs - 1 - index) === curQuestionIndex ? " < Question Value" : "")}
                         </li>)) 
             })}
             </ul>
