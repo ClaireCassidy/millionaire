@@ -19,10 +19,10 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
 
     useEffect(() => {
         randomOrder = computeRandomOrder([correctAnswer, ...incorrectAnswers].length);
-        console.log("ORDER: " +randomOrder);
-        console.log(JSON.stringify([correctAnswer, ...incorrectAnswers]));
+        // console.log("ORDER: " +randomOrder);
+        // console.log(JSON.stringify([correctAnswer, ...incorrectAnswers]));
         const reordered = reorderAnswers(randomOrder);
-        console.log(JSON.stringify(reordered));
+        // console.log(JSON.stringify(reordered));
         setAnswers(reordered);
     }, [incorrectAnswers]);
 
@@ -51,7 +51,7 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
 
     return (
         <>
-            {console.log("Question Display rendering")}
+            {/* {console.log("Question Display rendering")} */}
 
 
             <div><p>{question}</p></div>
@@ -66,7 +66,7 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
                         />
                 );
             })}
-            
+
             {lastAnswerCorrect != null ? (lastAnswerCorrect === true ? <p><b>Correct!</b> The answer was "<i>{lastAnswerText}</i>".</p> : <p><b>Incorrect!</b> The correct answer was "<i>{lastAnswerText}</i>".</p>) : <></>}
         </>
     );

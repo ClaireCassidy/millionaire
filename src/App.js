@@ -20,12 +20,15 @@ function App() {
   // track index of cur question being asked
   const [curQuestionIndex, setCurQuestionIndex] = useState(0);
   const [curQuestion, setCurQuestion] = useState(null);
+  // track the cash the user has currently accumulated and the 'safety net' cash prize
+  const [curCash, setCurCash] = useState(0);
+  const [curMinCash, setCurMinCash] = useState(0);
   // Toggling this triggers the use effect which fetches new questions
   const [gameOver, setGameOver] = useState(false);
 
   // Generates query strings, queries the API, and sets the app questions as per the API response
   useEffect(() => {
-    console.log("HOOK load questions executing ... ")
+    // console.log("HOOK load questions executing ... ")
     const loadNewQuestions = () => {
 
       // generate query text based on number of questions of specified difficulty required
@@ -42,16 +45,16 @@ function App() {
               return new Question(decodeStr(q.question), decodeStr(q.correct_answer), q.incorrect_answers.map(str => decodeStr(str)), q.difficulty);
             });
   
-            console.log(qsReceived);
+            // console.log(qsReceived);
             const difficulty = qsReceived[0].difficulty;
-            console.log("received q's for difficulty: "+difficulty);
+            // console.log("received q's for difficulty: "+difficulty);
   
             // push the Question objects to the question pool
             setQuestions(questions => [...questions, ...qsReceived]);
   
             // we're finished loading questions at the current difficulty level
-            console.log(JSON.stringify(loadingStates))
-            console.log("Setting difficulty for "+difficulty+" ... ")
+            // console.log(JSON.stringify(loadingStates))
+            // console.log("Setting difficulty for "+difficulty+" ... ")
             setloadingStates(loadingStates => ({...loadingStates, [difficulty]: false}));
   
           })
@@ -66,9 +69,9 @@ function App() {
 
   // prompt update of question displayed; occurs once when loading complete to load first question, then again whenever the curQuestionIndex is modified (i.e. by answering a question)
   useEffect(() => {
-    console.log("HOOK update question displayed ... ")
+    // console.log("HOOK update question displayed ... ")
 
-    console.log("Loading states changed, checking ... " + JSON.stringify(loadingStates));
+    // console.log("Loading states changed, checking ... " + JSON.stringify(loadingStates));
     if (doneLoadingQuestions(loadingStates)) {
       setCurQuestion(questions[curQuestionIndex]);
     }
@@ -106,14 +109,26 @@ function App() {
 
   const gotoNextQuestion = () => {
     if (curQuestionIndex < NUM_QS - 1) {
+
+      // update the prize money the player has accumulated
+      setCurCash(PRIZE_MONEY_INCREMENTS[curQuestionIndex]);
+      
+      const index = SAFE_INDICES.indexOf(curQuestionIndex);
+      if (index >= 0) {
+        console.log("hit safety net");
+        setCurMinCash(PRIZE_MONEY_INCREMENTS[SAFE_INDICES[index]]);
+      }
+
+      // update the question to be displayed
       setCurQuestionIndex(curQuestionIndex => curQuestionIndex + 1);
+
     } else console.log("End of q's");
     //console.log(curQuestionIndex);
   }
 
   return (
     <div className="App">
-      {console.log("Done?: " + doneLoadingQuestions(loadingStates))}
+      {/* {console.log("Done?: " + doneLoadingQuestions(loadingStates))} */}
 
       {curQuestion
         ? <>
@@ -131,6 +146,7 @@ function App() {
             />
           {gameOver && <p><b>Game Over!</b></p>}
           <button onClick={() => reload()}>reload</button>
+          <p>Current Cash: <b>{curCash}</b>, Cur Min Cash: <b>{curMinCash}</b></p>
         </>
         : <p>Loading...</p>}
     </div>
@@ -141,7 +157,7 @@ function App() {
 const doneLoadingQuestions = loadingStates => {
 
   for (let difficulty in loadingStates) {
-    console.log(difficulty+": "+loadingStates[difficulty])
+    //console.log(difficulty+": "+loadingStates[difficulty])
     if (loadingStates[difficulty]) return false;
   }
 
