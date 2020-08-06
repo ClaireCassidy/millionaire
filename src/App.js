@@ -7,7 +7,7 @@ import SidePanel from './SidePanel';
 const BASE_API_URL = "https://opentdb.com/api.php";
 const NUM_QS = 10;
 const PRIZE_MONEY_INCREMENTS = [500, 1000, 4000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
-const SAFE_INDICES = [3, 6];
+const SAFE_INDICES = [0, 3, 6];
 const NUM_EASY_QS = 3;
 const NUM_MED_QS = 4;
 const NUM_HARD_QS = 3;
@@ -20,13 +20,19 @@ function App() {
   // track index of cur question being asked
   const [curQuestionIndex, setCurQuestionIndex] = useState(0);
   const [curQuestion, setCurQuestion] = useState(null);
+  // Track the last correct answer for printing
+  const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null);
   // track the cash the user has currently accumulated and the 'safety net' cash prize
   const [curCash, setCurCash] = useState(0);
   const [curMinCash, setCurMinCash] = useState(0);
   // Toggling this triggers the use effect which fetches new questions
   const [gameOver, setGameOver] = useState(false);
+  // Toggle this to set if the user voluntarily left the game (game ends but they get to keep the current cash value vs. nearest safety net)
+  const [userRetired, setUserRetired] = useState(false);
   // Governs whether or not answer buttons should be active
   const [answerButtonsDisabled, setAnswerButtonsDisabled] = useState(false);
+  // Track which lifelines are still available
+  const [lifelinesRemaining, setLifelinesRemaining] = useState({fiftyFifty: true, phoneAFriend: true, askTheAudience: true})
 
   // Generates query strings, queries the API, and sets the app questions as per the API response
   useEffect(() => {
@@ -99,9 +105,16 @@ function App() {
     setCurCash(0);
     setCurMinCash(0);
     setAnswerButtonsDisabled(false);
+    setLastCorrectAnswer(null);
     setGameOver(false);
+    setUserRetired(false);
     loadNewQuestions();
-    // setGameOver(gameOver => !gameOver);
+  }
+
+  const userRetire = () => {
+    setUserRetired(true);
+    setGameOver(true);
+    setAnswerButtonsDisabled(true);
   }
 
   const handleSelection = (answeredCorrectly) => {
@@ -109,6 +122,7 @@ function App() {
     if (answeredCorrectly) {
       
       console.log("CORRECTLY ANSWERED");
+      setLastCorrectAnswer(curQuestion.correctAnswer);
       gotoNextQuestion();
 
     } else {
@@ -140,6 +154,12 @@ function App() {
     //console.log(curQuestionIndex);
   }
 
+  const lifelineSetters = {
+    disableFiftyFifty : () => {setLifelinesRemaining(lifelinesRemaining => ({...lifelinesRemaining, fiftyFifty: false }))},
+    disablePhoneAFriend : () => {setLifelinesRemaining(lifelinesRemaining => ({...lifelinesRemaining, phoneAFriend : false}))},
+    disableAskTheAudience : () => {setLifelinesRemaining(lifelinesRemaining => ({...lifelinesRemaining, askTheAudience: false}))}
+  }
+
   return (
     <div className="App">
       {/* {console.log("Done?: " + doneLoadingQuestions(loadingStates))} */}
@@ -152,6 +172,8 @@ function App() {
             incorrectAnswers={curQuestion.incorrectAnswers}
             handleSelection={handleSelection}
             answerButtonsDisabled={answerButtonsDisabled}
+            lifelineSetters={lifelineSetters}
+            lifelinesRemaining={lifelinesRemaining}
           />
           <SidePanel 
             increments={PRIZE_MONEY_INCREMENTS}
@@ -159,9 +181,12 @@ function App() {
             curQuestionIndex={curQuestionIndex}
             numQs={NUM_QS}
             />
-            {console.log(gameOver)}
-          {gameOver && <p><b>Game Over!</b></p>}
-          <button onClick={() => reload()}>reload</button>
+          {console.log(gameOver)}
+          {!gameOver && lastCorrectAnswer && <p><b>Correct!</b> The answer was {lastCorrectAnswer}</p>}
+          {gameOver && <p>{!userRetired && <b>Incorrect!</b>} The answer was {curQuestion.correctAnswer}</p>}
+          {gameOver && <h3><b>Game Over!</b> Your winnings are <b>{(!userRetired && curMinCash)}{(userRetired && curCash)}</b></h3>}
+          {gameOver && <button onClick={() => reload()}>Replay</button>}
+          {!gameOver && <button onClick={() => userRetire()}>Leave w/ cash</button>}
           <p>Current Cash: <b>{curCash}</b>, Cur Min Cash: <b>{curMinCash}</b></p>
         </>
         : <p>Loading...</p>}

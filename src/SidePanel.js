@@ -16,7 +16,7 @@ export default function SidePanel({increments, safeIndices, curQuestionIndex, nu
                 const highlight = (safeIndices.indexOf(index) > -1);
                 return (highlight 
                     ? (<li key={index}>
-                            <b>{prettifyNumber(elem)+((numQs - 1 - index) === curQuestionIndex ? " <" : "")}</b>
+                            <b>{prettifyNumber(elem)+((numQs - 1 - index) === curQuestionIndex ? " < Question Value" : "")}</b>
                         </li>) 
                     : (<li key={index}>
                             {prettifyNumber(elem)+((numQs - 1 - index) === curQuestionIndex ? " < Question Value" : "")}
