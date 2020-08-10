@@ -55,7 +55,6 @@ function App() {
 
   //const isDoneLoading = doneLoadingQuestions(loadingStates);
 
-  // @TODO: implement
   // Remove HTML encoded characters from API strings (hack):
   function decodeStr(str) {
     const textArea = document.createElement("textarea");
@@ -63,6 +62,8 @@ function App() {
     return textArea.value;
   }
 
+  // TODO: Don't check that incoming responses are in the order EASY, MEDIUM, HARD, so we accidentally put hard q's first, followed by med etc.
+  // Sol: Sort questions according to difficulty when pushing to questions
   const loadNewQuestions = () => {
 
     // generate query text based on number of questions of specified difficulty required
@@ -102,6 +103,7 @@ function App() {
     setCurQuestion(null);
     setCurQuestionIndex(0);
     setloadingStates({easy: true, medium: true, hard: true});
+    setLifelinesRemaining({fiftyFifty: true, phoneAFriend: true, askTheAudience: true});
     setCurCash(0);
     setCurMinCash(0);
     setAnswerButtonsDisabled(false);
@@ -170,6 +172,7 @@ function App() {
             question={curQuestion.questionText}
             correctAnswer={curQuestion.correctAnswer}
             incorrectAnswers={curQuestion.incorrectAnswers}
+            difficulty = {curQuestion.difficulty}
             handleSelection={handleSelection}
             answerButtonsDisabled={answerButtonsDisabled}
             lifelineSetters={lifelineSetters}

@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, PureComponent } from 'react'
 import AnswerButton from './AnswerButton'
 import LifelineDisplay from './LifelineDisplay'
 
 // @TODO:
 // Merge gotoNextQuestion and incorrectAnswerSelected into single function 'handleSelection'
-export default function QuestionDisplay({ question, correctAnswer, incorrectAnswers, handleSelection, answerButtonsDisabled, lifelineSetters, lifelinesRemaining }) {
+export default function QuestionDisplay({ question, correctAnswer, incorrectAnswers, difficulty, handleSelection, answerButtonsDisabled, lifelineSetters, lifelinesRemaining }) {
 
     const [answers, setAnswers] = useState(null);
-    const [disabledAnswersIndices, setDisabledAnswersIndices] = useState([true, true, true, true]);
+    const [disabledAnswersIndices, setDisabledAnswersIndices] = useState([]);
     const [fiftyFiftyActive, setFiftyFiftyActive] = useState(false);
+    const [papSuggestedAnswer, setPapSuggestedAnswer] = useState(null);
 
     let randomOrder = useRef();
 
@@ -19,12 +20,17 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
     }
 
     useEffect(() => {
+        // reset state from prev question
+        setFiftyFiftyActive(false);
+        setPapSuggestedAnswer(null);
+
         randomOrder = computeRandomOrder([correctAnswer, ...incorrectAnswers].length);
         // console.log("ORDER: " +randomOrder);
         // console.log(JSON.stringify([correctAnswer, ...incorrectAnswers]));
         const reordered = reorderAnswers(randomOrder);
         // console.log(JSON.stringify(reordered));
         setAnswers(reordered);
+        console.log("Difficulty: "+difficulty);
         setDisabledAnswersIndices(generateDisabledAnswersIndices(reordered));
 
     }, [incorrectAnswers]);
@@ -50,6 +56,57 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
     
         phoneAFriend : () => {
             console.log("Phone a Friend Activated");
+            console.log("50:50 active: "+fiftyFiftyActive);
+            if (fiftyFiftyActive) {
+                const successChance = { // since only 2 options the friend will have a higher success chance than she otherwise would
+                    easy: 0.9,
+                    medium: 0.75,
+                    hard: 0.65
+                }
+
+                console.log("Success chance: "+successChance[difficulty]);
+
+                // roll random number and use q difficulty to see if the correct answer will be suggested
+                const n = Math.random();
+                console.log("Rolled: "+n+" ["+(n <= successChance[difficulty] ? "success":"fail")+"]");
+                if (n <= successChance[difficulty]) {
+                    console.log("Suggests: "+correctAnswer);
+                    setPapSuggestedAnswer(correctAnswer);
+                } else {
+                    // get the index of the still-enabled incorrect answer
+                    const correctAnswerIndex = answers.indexOf(correctAnswer);
+                    let suggestedAnswerIndex = -1;
+                    for (let i = 0; i < answers.length; i++) {
+                        if (i != correctAnswerIndex && disabledAnswersIndices.indexOf(i) === -1) suggestedAnswerIndex = i; break;   
+                    }
+                    if (suggestedAnswerIndex === -1) console.log("Something went wrong")
+                    else {
+                        console.log("Suggests: "+answers[suggestedAnswerIndex]);
+                        setPapSuggestedAnswer(answers[suggestedAnswerIndex]);
+                    }
+                }
+            } else {    // fifty-fifty not active
+                const successChance = {
+                    easy: 0.85,
+                    medium: 0.65,
+                    hard: 0.35
+                }
+
+                console.log("Success chance: "+successChance[difficulty]);
+
+                // now roll a random number and use the question difficulty success chance to determine whether the friend will suggest the correct answer
+                const n = Math.random();
+                console.log("Rolled: "+n+" ["+(n <= successChance[difficulty] ? "success":"fail")+"]");
+                if (n <= successChance[difficulty]) { 
+                    console.log("Suggests: "+correctAnswer);
+                    setPapSuggestedAnswer(correctAnswer);
+                } else { 
+                    // pull one of the incorrect answers at random
+                    const index = Math.floor(Math.random()*3);
+                    console.log("Suggests: "+incorrectAnswers[index]);
+                    setPapSuggestedAnswer(incorrectAnswers[index]);
+                }
+            }
             lifelineSetters.disablePhoneAFriend();
         },
     
@@ -72,14 +129,6 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
     }
 
     const generateDisabledAnswersIndices = (answers) => {
-        // first get the index of the correct answer so as to avoid disabling it
-        // let correctAnswerIndex = -1;
-        // let arr = [false, false, false, false];
-        // let ans = answers.slice();
-
-        // for (let i=0; i<answers.length; i++) {
-        //     if (answers[i] === correctAnswer) correctAnswerIndex = i; break;
-        // }
     
         // Just disable the first two answers in the incorrectAnswers prop (they'll be in a random spot in answers)
         let indices = [];
@@ -110,10 +159,13 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
                     />
                 );
             })}
+            <hr />
             <LifelineDisplay
                 lifelineFunctions={lifelineFunctions}
                 lifelinesRemaining={lifelinesRemaining}
             />
+            {papSuggestedAnswer && <p>"I expect the answer is {papSuggestedAnswer}"</p>}
+            <hr />
         </>
     );
 
