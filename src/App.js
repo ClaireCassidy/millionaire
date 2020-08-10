@@ -17,6 +17,7 @@ function App() {
   const [questions, setQuestions] = useState([]);
   // track progress of the individual API calls
   const [loadingStates, setloadingStates] = useState({ easy: true, medium: true, hard: true });
+  const [initialLoad, setInitialLoad] = useState(true);
   // track index of cur question being asked
   const [curQuestionIndex, setCurQuestionIndex] = useState(0);
   const [curQuestion, setCurQuestion] = useState(null);
@@ -48,7 +49,25 @@ function App() {
 
     // console.log("Loading states changed, checking ... " + JSON.stringify(loadingStates));
     if (doneLoadingQuestions(loadingStates)) {
-      setCurQuestion(questions[curQuestionIndex]);
+      if (initialLoad) {
+        // if this is the inital loading of a q, we need to sort the qs
+        const questionOrder = {
+          easy: 0,
+          medium: 1,
+          hard: 2
+        }
+
+        let qs = questions.slice().sort((a, b) => {
+          return questionOrder[a.difficulty] - questionOrder[b.difficulty];
+        });
+        //console.log("Q's Sorted: "+JSON.stringify(qs));
+        setQuestions(qs);
+        setCurQuestion(qs[0]);
+        setInitialLoad(false);
+
+      } else {
+        setCurQuestion(questions[curQuestionIndex]);
+      }
     }
 
   }, [loadingStates, curQuestionIndex]);
@@ -84,7 +103,7 @@ function App() {
           const difficulty = qsReceived[0].difficulty;
           // console.log("received q's for difficulty: "+difficulty);
 
-          // push the Question objects to the question pool
+          // push the Question objects to the question pool 
           setQuestions(questions => [...questions, ...qsReceived]);
 
           // we're finished loading questions at the current difficulty level
@@ -102,6 +121,7 @@ function App() {
     setQuestions([]);
     setCurQuestion(null);
     setCurQuestionIndex(0);
+    setInitialLoad(true);
     setloadingStates({easy: true, medium: true, hard: true});
     setLifelinesRemaining({fiftyFifty: true, phoneAFriend: true, askTheAudience: true});
     setCurCash(0);
