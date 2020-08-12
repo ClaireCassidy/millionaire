@@ -112,6 +112,11 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
     
         askTheAudience : () => {
             console.log("Ask the Audience Activated");
+
+            if (fiftyFiftyActive) {
+                
+            }
+
             lifelineSetters.disableAskTheAudience();
         }
     }
@@ -164,7 +169,7 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
                 lifelineFunctions={lifelineFunctions}
                 lifelinesRemaining={lifelinesRemaining}
             />
-            {papSuggestedAnswer && <p>"I expect the answer is {papSuggestedAnswer}"</p>}
+            {papSuggestedAnswer && <p>"I expect the answer is <b>{papSuggestedAnswer}</b>"</p>}
             <hr />
         </>
     );
