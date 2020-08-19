@@ -1,15 +1,16 @@
 import React, { useState, useEffect, useRef, PureComponent } from 'react'
 import AnswerButton from './AnswerButton'
 import LifelineDisplay from './LifelineDisplay'
+import BarChart from './BarChart'
 
-// @TODO:
-// Merge gotoNextQuestion and incorrectAnswerSelected into single function 'handleSelection'
 export default function QuestionDisplay({ question, correctAnswer, incorrectAnswers, difficulty, handleSelection, answerButtonsDisabled, lifelineSetters, lifelinesRemaining }) {
 
     const [answers, setAnswers] = useState(null);
     const [disabledAnswersIndices, setDisabledAnswersIndices] = useState([]);
     const [fiftyFiftyActive, setFiftyFiftyActive] = useState(false);
     const [papSuggestedAnswer, setPapSuggestedAnswer] = useState(null);
+    const [askTheAudienceActive, setAskTheAudienceActive] = useState(false);
+    const [askTheAudienceHeights, setAskTheAudienceHeights] = useState([]);
 
     let randomOrder = useRef();
 
@@ -32,7 +33,7 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
         setAnswers(reordered);
         console.log("Difficulty: "+difficulty);
         setDisabledAnswersIndices(generateDisabledAnswersIndices(reordered));
-
+        setAskTheAudienceActive(false);
     }, [incorrectAnswers]);
 
     const computeRandomOrder = (length) => {
@@ -113,9 +114,19 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
         askTheAudience : () => {
             console.log("Ask the Audience Activated");
 
-            if (fiftyFiftyActive) {
-                
-            }
+            setAskTheAudienceActive(true);
+            //setAskTheAudienceHeights([0.25, 0.3, 0.25, 0.1]);
+            // returns object in the form {correctAnswer%age: ..., [incorrectAnswerPercentages ... ]}
+            // So we need to map these percentages back to the A, B, C, D answer they correspond to
+            // Really we just need to note the position of the Correct answer, and can assign incorrect answer percentages arbitrarily among the remaining answers
+            const answerPercentages = generateAskTheAudiencePercentages(fiftyFiftyActive, difficulty);
+            console.log(JSON.stringify(answerPercentages));
+            const correctAnswerIndex = answers.indexOf(correctAnswer);
+            console.log(`Correct Answer Index: ${correctAnswerIndex}`);
+            let orderedAnswerPercentages = [...answerPercentages.wrongAnswerPercentages]
+            orderedAnswerPercentages.splice(correctAnswerIndex, 0, answerPercentages.correctAnswerPercentage);
+            console.log(orderedAnswerPercentages);
+            setAskTheAudienceHeights(orderedAnswerPercentages);
 
             lifelineSetters.disableAskTheAudience();
         }
@@ -170,10 +181,83 @@ export default function QuestionDisplay({ question, correctAnswer, incorrectAnsw
                 lifelinesRemaining={lifelinesRemaining}
             />
             {papSuggestedAnswer && <p>"I expect the answer is <b>{papSuggestedAnswer}</b>"</p>}
+            {askTheAudienceActive && 
+                <>
+                    <BarChart yValues={askTheAudienceHeights} />
+                </>
+            }
             <hr />
         </>
     );
 
 }
 
+const generateAskTheAudiencePercentages = (fiftyFiftyActive, questionDifficulty) => {
+    
+    console.log(`Generating Ask the Audience Percentages ...\n\tFifty-Fifty Active: ${fiftyFiftyActive}\n\tQuestion Difficulty: ${questionDifficulty}`);
 
+    // Audience percentage a function of question difficulty & number of possible choices
+    if (fiftyFiftyActive) {
+
+        const biases = {
+            easy: {
+                offset: 0.8,
+                stdDev: 0.15
+            },
+            medium: {
+                offset: 0.6,
+                stdDev: 0.15
+            },
+            hard: {
+                offset: 0.5,
+                stdDev: 0.1
+            }
+        }
+
+        const offset = biases[questionDifficulty].offset;
+			const stdDev = biases[questionDifficulty].stdDev;
+
+			const bias = (Math.random() * (2 * stdDev)) - stdDev;
+			const correctAnswerPercentage = offset + bias;
+			const incorrectAnswerPercentage = 1 - correctAnswerPercentage;
+
+			// console.log("Offset: "+)
+            return {correctAnswerPercentage: correctAnswerPercentage,
+                    wrongAnswerPercentages: [incorrectAnswerPercentage]};
+	
+    } else {
+
+        const biases = {
+            easy: {
+                offset: 0.65,
+                stdDev: 0.2
+            },
+            medium: {
+                offset: 0.5,
+                stdDev: 0.2
+            },
+            hard: {
+                offset: 0.3,
+                stdDev: 0.15
+            }
+        }
+
+        const offset = biases[questionDifficulty].offset;
+        const stdDev = biases[questionDifficulty].stdDev;
+
+        const bias = ((Math.random() * (2 * stdDev)) - stdDev);
+        const correctAnswerPercentage = offset + bias;
+
+        let percentageRemaining = 1 - correctAnswerPercentage;
+        const wrongAnswer1Percentage = Math.random() * percentageRemaining;
+        percentageRemaining -= wrongAnswer1Percentage;
+        const wrongAnswer2Percentage = Math.random() * percentageRemaining;
+        percentageRemaining -= wrongAnswer2Percentage;
+        const wrongAnswer3Percentage = percentageRemaining;
+
+        return {
+            correctAnswerPercentage: correctAnswerPercentage,
+            wrongAnswerPercentages: [wrongAnswer1Percentage, wrongAnswer2Percentage, wrongAnswer3Percentage]
+        }
+    }
+}

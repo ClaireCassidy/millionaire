@@ -33,12 +33,12 @@ function App() {
   // Governs whether or not answer buttons should be active
   const [answerButtonsDisabled, setAnswerButtonsDisabled] = useState(false);
   // Track which lifelines are still available
-  const [lifelinesRemaining, setLifelinesRemaining] = useState({fiftyFifty: true, phoneAFriend: true, askTheAudience: true})
+  const [lifelinesRemaining, setLifelinesRemaining] = useState({ fiftyFifty: true, phoneAFriend: true, askTheAudience: true })
 
   // Generates query strings, queries the API, and sets the app questions as per the API response
   useEffect(() => {
     // console.log("HOOK load questions executing ... ")
-    
+
     loadNewQuestions();
 
   }, []);
@@ -86,33 +86,37 @@ function App() {
   const loadNewQuestions = () => {
 
     // generate query text based on number of questions of specified difficulty required
-    const queries = generateApiQueries({ easy: NUM_EASY_QS, medium: NUM_MED_QS, hard: NUM_HARD_QS});
+    const queries = generateApiQueries({ easy: NUM_EASY_QS, medium: NUM_MED_QS, hard: NUM_HARD_QS });
 
-    queries.forEach(query => {
-      axios.get(query)
-        .then(res => {
-          //extract the questions into an array
-          let qsReceived = res.data.results;
+    try {
+      queries.forEach(query => {
+        axios.get(query)
+          .then(res => {
+            //extract the questions into an array
+            let qsReceived = res.data.results;
 
-          // convert the responses into Question objects
-          qsReceived = qsReceived.map(q => {
-            return new Question(decodeStr(q.question), decodeStr(q.correct_answer), q.incorrect_answers.map(str => decodeStr(str)), q.difficulty);
-          });
+            // convert the responses into Question objects
+            qsReceived = qsReceived.map(q => {
+              return new Question(decodeStr(q.question), decodeStr(q.correct_answer), q.incorrect_answers.map(str => decodeStr(str)), q.difficulty);
+            });
 
-          // console.log(qsReceived);
-          const difficulty = qsReceived[0].difficulty;
-          // console.log("received q's for difficulty: "+difficulty);
+            // console.log(qsReceived);
+            const difficulty = qsReceived[0].difficulty;
+            // console.log("received q's for difficulty: "+difficulty);
 
-          // push the Question objects to the question pool 
-          setQuestions(questions => [...questions, ...qsReceived]);
+            // push the Question objects to the question pool 
+            setQuestions(questions => [...questions, ...qsReceived]);
 
-          // we're finished loading questions at the current difficulty level
-          // console.log(JSON.stringify(loadingStates))
-          // console.log("Setting difficulty for "+difficulty+" ... ")
-          setloadingStates(loadingStates => ({...loadingStates, [difficulty]: false}));
+            // we're finished loading questions at the current difficulty level
+            // console.log(JSON.stringify(loadingStates))
+            // console.log("Setting difficulty for "+difficulty+" ... ")
+            setloadingStates(loadingStates => ({ ...loadingStates, [difficulty]: false }));
 
-        })
-    });
+          })
+      });
+    } catch (e) {
+      console.log("Error fetching questions");
+    }
   }
 
 
@@ -122,8 +126,8 @@ function App() {
     setCurQuestion(null);
     setCurQuestionIndex(0);
     setInitialLoad(true);
-    setloadingStates({easy: true, medium: true, hard: true});
-    setLifelinesRemaining({fiftyFifty: true, phoneAFriend: true, askTheAudience: true});
+    setloadingStates({ easy: true, medium: true, hard: true });
+    setLifelinesRemaining({ fiftyFifty: true, phoneAFriend: true, askTheAudience: true });
     setCurCash(0);
     setCurMinCash(0);
     setAnswerButtonsDisabled(false);
@@ -142,7 +146,7 @@ function App() {
   const handleSelection = (answeredCorrectly) => {
 
     if (answeredCorrectly) {
-      
+
       console.log("CORRECTLY ANSWERED");
       setLastCorrectAnswer(curQuestion.correctAnswer);
       gotoNextQuestion();
@@ -162,7 +166,7 @@ function App() {
 
       // update the prize money the player has accumulated
       setCurCash(PRIZE_MONEY_INCREMENTS[curQuestionIndex]);
-      
+
       const index = SAFE_INDICES.indexOf(curQuestionIndex);
       if (index >= 0) {
         console.log("hit safety net");
@@ -177,9 +181,9 @@ function App() {
   }
 
   const lifelineSetters = {
-    disableFiftyFifty : () => {setLifelinesRemaining(lifelinesRemaining => ({...lifelinesRemaining, fiftyFifty: false }))},
-    disablePhoneAFriend : () => {setLifelinesRemaining(lifelinesRemaining => ({...lifelinesRemaining, phoneAFriend : false}))},
-    disableAskTheAudience : () => {setLifelinesRemaining(lifelinesRemaining => ({...lifelinesRemaining, askTheAudience: false}))}
+    disableFiftyFifty: () => { setLifelinesRemaining(lifelinesRemaining => ({ ...lifelinesRemaining, fiftyFifty: false })) },
+    disablePhoneAFriend: () => { setLifelinesRemaining(lifelinesRemaining => ({ ...lifelinesRemaining, phoneAFriend: false })) },
+    disableAskTheAudience: () => { setLifelinesRemaining(lifelinesRemaining => ({ ...lifelinesRemaining, askTheAudience: false })) }
   }
 
   return (
@@ -192,18 +196,18 @@ function App() {
             question={curQuestion.questionText}
             correctAnswer={curQuestion.correctAnswer}
             incorrectAnswers={curQuestion.incorrectAnswers}
-            difficulty = {curQuestion.difficulty}
+            difficulty={curQuestion.difficulty}
             handleSelection={handleSelection}
             answerButtonsDisabled={answerButtonsDisabled}
             lifelineSetters={lifelineSetters}
             lifelinesRemaining={lifelinesRemaining}
           />
-          <SidePanel 
+          <SidePanel
             increments={PRIZE_MONEY_INCREMENTS}
             safeIndices={SAFE_INDICES}
             curQuestionIndex={curQuestionIndex}
             numQs={NUM_QS}
-            />
+          />
           {console.log(gameOver)}
           {!gameOver && lastCorrectAnswer && <p><b>Correct!</b> The answer was {lastCorrectAnswer}</p>}
           {gameOver && <p>{!userRetired && <b>Incorrect!</b>} The answer was {curQuestion.correctAnswer}</p>}
