@@ -3,6 +3,8 @@ import './App.css';
 import axios from 'axios';
 import QuestionDisplay from './QuestionDisplay';
 import SidePanel from './SidePanel';
+import PortraitWindow from './PortraitWindow';
+// import image from './temp-user-image.jpg';
 
 const BASE_API_URL = "https://opentdb.com/api.php";
 const NUM_QS = 10;
@@ -14,6 +16,9 @@ const NUM_HARD_QS = 3;
 
 function App() {
 
+  // DEBUG
+  const [debug, setDebug] = useState(true);
+
   const [questions, setQuestions] = useState([]);
   // track progress of the individual API calls
   const [loadingStates, setloadingStates] = useState({ easy: true, medium: true, hard: true });
@@ -21,6 +26,7 @@ function App() {
   // track index of cur question being asked
   const [curQuestionIndex, setCurQuestionIndex] = useState(0);
   const [curQuestion, setCurQuestion] = useState(null);
+  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
   // Track the last correct answer for printing
   const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null);
   // track the cash the user has currently accumulated and the 'safety net' cash prize
@@ -128,6 +134,7 @@ function App() {
     setInitialLoad(true);
     setloadingStates({ easy: true, medium: true, hard: true });
     setLifelinesRemaining({ fiftyFifty: true, phoneAFriend: true, askTheAudience: true });
+    setAllQuestionsAnswered(false);
     setCurCash(0);
     setCurMinCash(0);
     setAnswerButtonsDisabled(false);
@@ -176,7 +183,10 @@ function App() {
       // update the question to be displayed
       setCurQuestionIndex(curQuestionIndex => curQuestionIndex + 1);
 
-    } else console.log("End of q's");
+    } else {
+      setAllQuestionsAnswered(true);
+      console.log("End of q's");
+    }
     //console.log(curQuestionIndex);
   }
 
@@ -186,38 +196,85 @@ function App() {
     disableAskTheAudience: () => { setLifelinesRemaining(lifelinesRemaining => ({ ...lifelinesRemaining, askTheAudience: false })) }
   }
 
-  return (
-    <div className="App">
-      {/* {console.log("Done?: " + doneLoadingQuestions(loadingStates))} */}
+  // return (
+  //   <div className="App">
+  //     {/* {console.log("Done?: " + doneLoadingQuestions(loadingStates))} */}
+  //     {debug && <button onClick={() => setCurQuestionIndex(9)}>Skip</button>}
 
-      {curQuestion
-        ? <>
-          <QuestionDisplay
-            question={curQuestion.questionText}
-            correctAnswer={curQuestion.correctAnswer}
-            incorrectAnswers={curQuestion.incorrectAnswers}
-            difficulty={curQuestion.difficulty}
-            handleSelection={handleSelection}
-            answerButtonsDisabled={answerButtonsDisabled}
-            lifelineSetters={lifelineSetters}
-            lifelinesRemaining={lifelinesRemaining}
-          />
-          <SidePanel
-            increments={PRIZE_MONEY_INCREMENTS}
-            safeIndices={SAFE_INDICES}
-            curQuestionIndex={curQuestionIndex}
-            numQs={NUM_QS}
-          />
-          {console.log(gameOver)}
-          {!gameOver && lastCorrectAnswer && <p><b>Correct!</b> The answer was {lastCorrectAnswer}</p>}
-          {gameOver && <p>{!userRetired && <b>Incorrect!</b>} The answer was {curQuestion.correctAnswer}</p>}
-          {gameOver && <h3><b>Game Over!</b> Your winnings are <b>{(!userRetired && curMinCash)}{(userRetired && curCash)}</b></h3>}
-          {gameOver && <button onClick={() => reload()}>Replay</button>}
-          {!gameOver && <button onClick={() => userRetire()}>Leave w/ cash</button>}
-          <p>Current Cash: <b>{curCash}</b>, Cur Min Cash: <b>{curMinCash}</b></p>
-        </>
-        : <p>Loading...</p>}
+  //     {(curQuestion
+  //       ?
+  //       (allQuestionsAnswered ?
+  //         <>
+  //           <h2>Congrats!</h2>
+  //           <p>You're a Millionaire! :)</p>
+  //           <button onClick={() => reload()}>Play Again</button>
+  //         </>
+  //         :
+  //         <>
+  //           <QuestionDisplay className="QuestionDisplay"
+  //             question={curQuestion.questionText}
+  //             correctAnswer={curQuestion.correctAnswer}
+  //             incorrectAnswers={curQuestion.incorrectAnswers}
+  //             difficulty={curQuestion.difficulty}
+  //             handleSelection={handleSelection}
+  //             answerButtonsDisabled={answerButtonsDisabled}
+  //             lifelineSetters={lifelineSetters}
+  //             lifelinesRemaining={lifelinesRemaining}
+  //           />
+  //           <SidePanel className="SidePanel"
+  //             increments={PRIZE_MONEY_INCREMENTS}
+  //             safeIndices={SAFE_INDICES}
+  //             curQuestionIndex={curQuestionIndex}
+  //             numQs={NUM_QS}
+  //           />
+  //           {!gameOver && lastCorrectAnswer && <p><b>Correct!</b> The answer was {lastCorrectAnswer}</p>}
+  //           {gameOver && <p>{!userRetired && <b>Incorrect!</b>} The answer was {curQuestion.correctAnswer}</p>}
+  //           {gameOver && <h3><b>Game Over!</b> Your winnings are <b>{(!userRetired && curMinCash)}{(userRetired && curCash)}</b></h3>}
+  //           {gameOver && <button onClick={() => reload()}>Replay</button>}
+  //           {!gameOver && <button onClick={() => userRetire()}>Leave w/ cash</button>}
+  //           <p>Current Cash: <b>{curCash}</b>, Cur Min Cash: <b>{curMinCash}</b></p>
+  //         </>)
+  //       : 
+  //       <p>Loading...</p>)}
+  //   </div>
+  // );
+
+  return (
+    <>
+    {curQuestion ? 
+
+    <div className="App">
+
+      <div className="MainWindow">
+          {/* <div className="UserDisplay">
+              <img src={require()}/>
+          </div> */}
+          <PortraitWindow 
+            imagePath={"./images/image1.jpg"}
+            lastCorrectAnswer={"This is a nightmare :D"}
+            />
+           <QuestionDisplay className="QuestionDisplay"
+              question={curQuestion.questionText}
+              correctAnswer={curQuestion.correctAnswer}
+              incorrectAnswers={curQuestion.incorrectAnswers}
+              difficulty={curQuestion.difficulty}
+              handleSelection={handleSelection}
+              answerButtonsDisabled={answerButtonsDisabled}
+              lifelineSetters={lifelineSetters}
+              lifelinesRemaining={lifelinesRemaining}
+            />
+      </div>
+      <div className="SideWindow">
+        <SidePanel
+              increments={PRIZE_MONEY_INCREMENTS}
+              safeIndices={SAFE_INDICES}
+              curQuestionIndex={curQuestionIndex}
+              numQs={NUM_QS}
+            />
+      </div>
     </div>
+    : <p>Loading...</p>}
+    </>
   );
 
 }

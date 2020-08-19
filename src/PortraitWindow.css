@@ -1,0 +1,24 @@
+/* .Container img {
+
+    width: 100px;
+    height: 100px;
+}
+*/
+
+.Container {
+    height: 200px;
+    border: 1px solid white;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding: 10px;
+}
+
+.PortraitWindowText {
+    border: 1px solid red;
+    margin: 0px;
+    min-width: 100%;
+    /* display: flex; */
+    flex-basis: 10%;
+    color: white;
+} 

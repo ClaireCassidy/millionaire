@@ -1,0 +1,36 @@
+body {
+    border: 1px solid black;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.App {
+    border: 1px solid red;
+    background-color: aqua;
+    min-width: 60vw;
+    max-width: 60vw;
+    display: flex;
+}
+
+.MainWindow {
+    flex-basis: 70%;
+    display: flex;
+    flex-direction: column;
+}
+
+.UserDisplay{
+    display: flex;
+    flex-basis: 10%;
+    border: 5px solid green;
+}
+
+.UserDisplay img {
+    width: 100%;
+    height: auto;
+}
+
+.SideWindow {
+    flex-basis: 30%;
+}
