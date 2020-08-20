@@ -1,0 +1,8 @@
+.LifelineButton:hover {
+    cursor: pointer;
+}
+
+.LifelineButton:active {
+    width: 90%;
+    height: 90%;
+}
