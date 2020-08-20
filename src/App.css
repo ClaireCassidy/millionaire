@@ -1,34 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap");
+
 body {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     max-width: 100%;
     display: flex;
     justify-content: center;
     align-content: center;
+    color: rgb(229, 229, 229);
+    font-family: "Noto Sans JP", sans-serif;
 }
 
 .App {
-    border: 1px solid red;
-    background-color: aqua;
+    border: 2px double rgb(229, 229, 229);
+    background-color: rgb(20, 33, 61);
     min-width: 60vw;
     max-width: 60vw;
     display: flex;
+    /* padding: 5px; */
 }
 
 .MainWindow {
     flex-basis: 70%;
     display: flex;
     flex-direction: column;
-}
-
-.UserDisplay{
-    display: flex;
-    flex-basis: 10%;
-    border: 5px solid green;
-}
-
-.UserDisplay img {
-    width: 100%;
-    height: auto;
 }
 
 .SideWindow {

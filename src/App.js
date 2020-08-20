@@ -152,10 +152,11 @@ function App() {
 
   const handleSelection = (answeredCorrectly) => {
 
+    setLastCorrectAnswer(curQuestion.correctAnswer);
+
     if (answeredCorrectly) {
 
       console.log("CORRECTLY ANSWERED");
-      setLastCorrectAnswer(curQuestion.correctAnswer);
       gotoNextQuestion();
 
     } else {
@@ -249,9 +250,10 @@ function App() {
           {/* <div className="UserDisplay">
               <img src={require()}/>
           </div> */}
-          <PortraitWindow 
+          <PortraitWindow className="PortraitWindow"
             imagePath={"./images/image1.jpg"}
-            lastCorrectAnswer={"This is a nightmare :D"}
+            lastCorrectAnswer={lastCorrectAnswer}
+            answeredCorrectly={curQuestionIndex !== 0 && !gameOver}
             />
            <QuestionDisplay className="QuestionDisplay"
               question={curQuestion.questionText}

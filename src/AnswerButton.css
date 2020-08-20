@@ -1,0 +1,35 @@
+.AnswerButtonContainer {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.AnsButton {
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 1em;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    padding: 10px 0px 10px 0px;
+    background-color: white;
+    box-shadow: 0px 0px 10px 10px aliceblue inset;
+    text-shadow: 1px 1px 2px rgba(161, 90, 90, 0.25);
+    border: 1px solid aliceblue;
+    transition: letter-spacing 0.2s;
+    outline: none;
+}
+
+.AnsButton:hover:enabled {
+    color: rgb(28, 46, 83);
+    background-color: white;
+    box-shadow: 0px 0px 10px 5px aliceblue inset;
+    padding: none;
+    letter-spacing: 0.12em;
+}
+
+.AnsButton:active {
+    color: rgb(252, 163, 17);
+}
+
+.AnsButton:disabled {
+    
+}

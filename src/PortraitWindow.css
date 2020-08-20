@@ -5,7 +5,7 @@
 }
 */
 
-.Container {
+.PortraitWindowContainer {
     height: 200px;
     border: 1px solid white;
     display: flex;
@@ -22,3 +22,18 @@
     flex-basis: 10%;
     color: white;
 } 
+
+.PrevCorrectAnswer {
+    font-weight: bold;
+}
+
+.CorrectAnswerIcon {
+    opacity: 0;
+    animation: fadeInOut 1s;
+}
+
+@keyframes fadeInOut {
+  0%   { opacity:0; }
+  50%  { opacity:1; }
+  100% { opacity:0; }
+}

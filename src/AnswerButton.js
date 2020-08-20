@@ -1,10 +1,11 @@
 import React from 'react'
+import './AnswerButton.css'
 
 export default function AnswerButton({answer, isCorrect, selectAnswer, disabled}) {
     return (
-    	<div>
-            {isCorrect && <button onClick={() => {selectAnswer(true)}} disabled={disabled}><b>{answer}</b></button>}
-            {!isCorrect && <button onClick={() => {selectAnswer(false)}} disabled={disabled}><>{answer}</></button>}
+    	<div className="AnswerButtonContainer">
+            {isCorrect && <button className="AnsButton" onClick={() => {selectAnswer(true)}} disabled={disabled}><i>{answer}</i></button>}
+            {!isCorrect && <button className="AnsButton" onClick={() => {selectAnswer(false)}} disabled={disabled}><>{answer}</></button>}
         </div>
     )
 }
