@@ -1,8 +1,59 @@
-.LifelineButton:hover {
+.LifelineDisplayContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid red;
+    padding: 10px;
+}
+
+.LifelineDisplayHeaderContainer {
+    padding-bottom: 15px;
+}
+.LifelineDisplayHeader {
+    margin: 0px;
+    font-size: 1.0em;
+    text-decoration: underline;
+    font-weight: 600;
+    text-shadow: 2px 2px 4px hsl(221, 51, 10);
+    letter-spacing: 0.2em;
+}
+
+.LifelineButtonsContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.LifelineButton {
+    margin: 2px;
+    width: 64px;
+    height: 64px;
+}
+
+@media only screen and (max-width: 720px) {
+
+    .LifelineButtonsContainer {
+        justify-content: space-between;
+    }
+    .LifelineButton {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.LifelineButton:hover:enabled {
     cursor: pointer;
 }
+/* 
+.LifelineButton:hover:disabled {
+    cursor: not-allowed;
+} */
 
 .LifelineButton:active {
     width: 90%;
     height: 90%;
+}
+
+.LifelineButton:disabled {
+    opacity: 50%;
 }

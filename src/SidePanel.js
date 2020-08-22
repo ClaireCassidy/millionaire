@@ -1,10 +1,6 @@
 import React from 'react'
-import phoneAFriendIcon from './images/phoneafriendicon.png'
 import LifelineDisplay from './LifelineDisplay';
 
-// Side panel sh
-
-//export default function SidePanel({ increments, safeIndices, curQuestionIndex, numQs }) {
     export default function SidePanel({ prizeAmountsInfo, lifelinesInfo }) {
 
     // To insert commas in numbers
@@ -28,12 +24,6 @@ import LifelineDisplay from './LifelineDisplay';
                     })}
                 </ul>
             </div>
-            {/* <LifelineDisplay />  */}
-            {/* <div className="Lifelines">
-                <img src={phoneAFriendIcon} />
-                <img src={phoneAFriendIcon} />
-                <img src={phoneAFriendIcon} />
-            </div> */}
             <LifelineDisplay
                 lifelineFunctions = {lifelinesInfo.lifelineFunctions}
                 lifelinesRemaining = {lifelinesInfo.lifelinesRemaining}
