@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import axios from 'axios';
 import QuestionDisplay from './QuestionDisplay';
@@ -82,6 +82,11 @@ function App() {
         setQuestions(qs);
         setCurQuestion(qs[0]);
         setInitialLoad(false);
+
+        const randomOrder = computeRandomOrder([qs[0].correctAnswer, ...qs[0].incorrectAnswers].length);
+        const reordered = reorderAnswers(randomOrder, qs[0]);
+        setAnswers(reordered);
+        setDisabledAnswersIndices(generateDisabledAnswersIndices(reordered, qs[0]));
 
       } else {
 
@@ -226,6 +231,7 @@ function App() {
 
     fiftyFifty: () => {
       console.log("Fifty-Fifty Activated");
+      setFiftyFiftyActive(true);
 
       console.log("!!!!"+JSON.stringify(curQuestion));
       console.log("\tanswers: "+answers);
@@ -405,6 +411,9 @@ return (
             answerButtonsDisabled={answerButtonsDisabled}
             lifelineSetters={lifelineSetters}
             lifelinesRemaining={lifelinesRemaining}
+            answers={answers}
+            disabledAnswersIndices={disabledAnswersIndices}
+            fiftyFiftyActive={fiftyFiftyActive}
           />
         </div>
         <div className="SideWindow">
