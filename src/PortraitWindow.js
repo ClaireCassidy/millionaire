@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './PortraitWindow.css'
 import image from './images/image1.jpg'
+import audience_background from './images/audience_background.png'
 import BarChart from './BarChart.js'
 
 export default function PortraitWindow({ imagePath, lastCorrectAnswer, answeredCorrectly, papSuggestedAnswer, askTheAudienceInfo, fiftyFiftyActive }) {
@@ -22,9 +23,11 @@ export default function PortraitWindow({ imagePath, lastCorrectAnswer, answeredC
     }, [lastCorrectAnswer]);
 
     const styles = {
-        backgroundImage: `url(${image})`,
-        backgroundSize: "100% 100%",
-        backgroundRepeat: "no-repeat"
+        backgroundImage: `url(${audience_background})`,
+        backgroundRepeat: "repeat-x",
+        backgroundSize: "auto 100%"
+        // backgroundSize: "100% 100%",
+        // backgroundRepeat: "no-repeat"
     }
 
     //let image = "image1.jpg"
