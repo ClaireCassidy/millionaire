@@ -498,6 +498,7 @@ function App() {
                 active: askTheAudienceActive,
                 heights: askTheAudienceHeights
               }}
+              fiftyFiftyActive={fiftyFiftyActive}
             />
             <QuestionDisplay className="QuestionDisplay"
               question={curQuestion.questionText}

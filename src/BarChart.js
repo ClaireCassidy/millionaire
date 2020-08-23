@@ -4,12 +4,14 @@ import Bar from './Bar'
 export default function BarChart({yValues}) {
 
     const barChartStyle = {
-        height: "200px",
-        width: "200px",
+        height: "20%",
+        width: "20%",
         backgroundColor: "blue",
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
+        alignContent: "center",
+        border: "1px solid yellow",
         padding: "10px"
     }
 

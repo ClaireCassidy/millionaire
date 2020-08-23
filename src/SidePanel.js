@@ -1,4 +1,5 @@
 import React from 'react'
+import './SidePanel.css'
 import LifelineDisplay from './LifelineDisplay';
 
     export default function SidePanel({ prizeAmountsInfo, lifelinesInfo }) {

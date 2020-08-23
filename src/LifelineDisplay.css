@@ -1,8 +1,11 @@
 .LifelineDisplayContainer {
     display: flex;
     flex-direction: column;
-    border: 1px solid red;
+    /* border: 1px solid red; */
+    border: 2px double rgba(255,255,255,0.7);
     padding: 10px;
+    margin: 0px 5px 5px 5px;
+    background-color: black;
 }
 
 .LifelineDisplayHeaderContainer {
@@ -11,9 +14,11 @@
 .LifelineDisplayHeader {
     margin: 0px;
     font-size: 1.0em;
-    text-decoration: underline;
+    /* text-decoration: underline; */
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.8);
     font-weight: 600;
-    text-shadow: 2px 2px 4px hsl(221, 51, 10);
+    text-shadow: 1px 1px 3px rgba(252, 163, 17, 0.7);
     letter-spacing: 0.2em;
 }
 
@@ -48,11 +53,11 @@
 .LifelineButton:hover:disabled {
     cursor: not-allowed;
 } */
-
+/* 
 .LifelineButton:active {
     width: 90%;
     height: 90%;
-}
+} */
 
 .LifelineButton:disabled {
     opacity: 50%;

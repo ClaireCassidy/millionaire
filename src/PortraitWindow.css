@@ -6,18 +6,21 @@
 */
 
 .PortraitWindowContainer {
-    height: 200px;
-    border: 1px solid white;
+    height: 100%;
+    /* border: 1px solid white; */
+    border-right: 2px double rgba(255,255,255,0.5);
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
     padding: 10px;
+    /* border: 1px solid greenyellow; */
 }
 
 .PortraitWindowText {
-    border: 1px solid red;
+    /* border: 1px solid red; */
     margin: 0px;
-    min-width: 100%;
+    min-width: 80%;
+    /* position: absolute; */
     /* display: flex; */
     flex-basis: 10%;
     color: white;
@@ -28,8 +31,19 @@
 }
 
 .CorrectAnswerIcon {
+    /* position: absolute;
+    margin-left: auto;
+    margin-top: auto; */
     opacity: 0;
     animation: fadeInOut 1s;
+}
+
+.BarChart {
+    /* margin: auto; */
+    /* justify-self: flex-end !important ; */
+    align-self: flex-start;
+    position: absolute;
+    margin-left: auto;
 }
 
 @keyframes fadeInOut {
