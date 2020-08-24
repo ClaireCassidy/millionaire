@@ -2,7 +2,7 @@ import React from 'react'
 import './SidePanel.css'
 import LifelineDisplay from './LifelineDisplay';
 
-    export default function SidePanel({ prizeAmountsInfo, lifelinesInfo, userRetire }) {
+    export default function SidePanel({ prizeAmountsInfo, lifelinesInfo, userRetire, disabled }) {
 
     // To insert commas in numbers
     const prettifyNumber = num => {
@@ -25,7 +25,7 @@ import LifelineDisplay from './LifelineDisplay';
     // }
 
     return (
-        <div className="SidePanelContainer">
+        <div className={"SidePanelContainer"+(disabled ? " Disabled" : "")}>
             <div className="PrizeAmountsDiv">
                 <h3 className="PrizeAmountsHeader">Question Value:</h3>
                 <ul className="PrizeAmountsList">
@@ -43,12 +43,13 @@ import LifelineDisplay from './LifelineDisplay';
                 </ul>
                 <div className="QuitContainer">
                     <h4 className="LeaveEarlyText">Leave now with <span className="LeaveEarlyAmount">{"€ "+(prizeAmountsInfo.curQuestionIndex === 0 ? "0" : prizeAmountsInfo.increments[prizeAmountsInfo.curQuestionIndex - 1])}</span>?</h4>
-                    <button className="LeaveEarlyButton" onClick={() => userRetire()}>Quit</button>
+                    <button className="LeaveEarlyButton" onClick={() => userRetire()} disabled={disabled}>Quit</button>
                 </div>
             </div>
             <LifelineDisplay
                 lifelineFunctions = {lifelinesInfo.lifelineFunctions}
                 lifelinesRemaining = {lifelinesInfo.lifelinesRemaining}
+                disabled = {disabled}
                 />
         </div>
     )

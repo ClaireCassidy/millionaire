@@ -48,6 +48,19 @@
     }
 }
 
+@media only screen and (max-width: 600px) {
+
+    .LifelineButtonsContainer {
+        justify-content: space-between;
+    }
+    
+    .LifelineButton {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+
 .LifelineButton:hover:enabled {
     cursor: pointer;
 }

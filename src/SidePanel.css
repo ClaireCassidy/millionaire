@@ -1,109 +1,129 @@
 .SidePanelContainer {
-    height: 100%;
-    /* border: 1px solid red; */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+  height: 100%;
+  /* border: 1px solid red; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.Disabled {
+  opacity: 50%;
 }
 
 .PrizeAmountsDiv {
-    border: 1px solid red;
-    background-color: black;
-    border: 2px double rgba(255,255,255,0.6);
-    margin: 5px 5px 10px 5px;
-    box-shadow: 0px 0px 30px 5px rgba(252, 163, 17, 0.2) inset;
-    padding: 10px;
+  background-color: black;
+  border: 2px double rgba(255, 255, 255, 0.6);
+  margin: 5px 5px 10px 5px;
+  box-shadow: 0px 0px 30px 5px rgba(252, 163, 17, 0.2) inset;
+  padding: 10px;
 }
 
 .PrizeAmountsHeader {
-    margin: 0px;
-    font-size: 1.0em;
-    /* text-decoration: underline; */
-    padding-bottom: 4px;
-    border-bottom: 1px solid rgba(255,255,255,0.8);
-    font-weight: 600;
-    text-shadow: 1px 1px 3px rgba(252, 163, 17, 0.7);
-    letter-spacing: 0.2em;
+  margin: 0px;
+  font-size: 1em;
+  /* text-decoration: underline; */
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(252, 163, 17, 0.7);
+  letter-spacing: 0.2em;
 }
 
 .PrizeAmountsList {
-    list-style-type: none;
-    font-weight: normal;
-    text-shadow: 1px 0px 2px rgba(255,255,255,0.8);
-
+  list-style-type: none;
+  font-weight: normal;
+  text-shadow: 1px 0px 2px rgba(255, 255, 255, 0.8);
+  /* border: 1px solid red; */
+  /* border-bottom: 1px solid white; */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  padding-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .SafeAmount {
-    color: gold;
+  color: gold;
 }
 
-
 .CurrentValue {
-    font-weight: bolder;
-    color:green;
-    text-shadow: none;
-    letter-spacing: 0.1em;
-    font-size: 1.1em;
-    border-left: 2px double green;
-    padding-left: 5px;
+  font-weight: bolder;
+  color: green;
+  text-shadow: none;
+  letter-spacing: 0.1em;
+  font-size: 1.1em;
+  border-left: 2px double green;
+  padding-left: 5px;
 }
 
 .CurrentValueSpecial {
-    font-weight: bolder;
-    color:green;
-    text-shadow: 0px 0px 5px rgb(252, 163, 17);
-    border-left: 2px double rgb(252, 163, 17);
-    padding-left: 5px;
-    letter-spacing: 0.1em;
-    font-size: 1.1em;
+  font-weight: bolder;
+  color: green;
+  text-shadow: 0px 0px 5px rgb(252, 163, 17);
+  border-left: 2px double rgb(252, 163, 17);
+  padding-left: 5px;
+  letter-spacing: 0.1em;
+  font-size: 1.1em;
 }
 
 .AmountReached {
-    opacity: 40%;
+  opacity: 40%;
 }
 
 .QuitContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    /* border: 1px solid gold; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  /* border: 1px solid gold; */
 }
 
 .LeaveEarlyAmount {
-    /* text-decoration: ; */
-    /* font-style: italic; */
-    font-weight: 800;
-    text-shadow: 0px 0px 5px rgb(252, 163, 17);
+  /* text-decoration: ; */
+  /* font-style: italic; */
+  font-weight: 800;
+  text-shadow: 0px 0px 5px rgb(252, 163, 17);
 }
 
 .LeaveEarlyText {
-    border-top: 1px solid rgba(255,255,255,0.6);
-    padding: 10px 0px 10px 0px;
-    margin: 0px;
-    font-weight: 400;
-    /* border: 1px solid red; */
+  /* border-top: 1px solid rgba(255,255,255,0.6); */
+  padding: 0px 0px 10px 0px;
+  margin: 0px;
+  font-weight: 400;
+  /* border: 1px solid red; */
 }
 
 .LeaveEarlyButton {
-    width: 100%;
-    padding: 0px;
-    /* min-width: 100%;
+  width: 100%;
+  padding: 0px;
+  /* min-width: 100%;
     min-height: 100%; */
-    font-size: 0.8em;
-    letter-spacing: 0.1em;
-    font-weight: 600;
-    padding: 4px 4px 4px 4px;
-    background-color: white;
-    box-shadow: 0px 0px 10px 10px aliceblue inset;
-    text-shadow: 1px 1px 2px rgba(161, 90, 90, 0.25);
-    border: 1px solid aliceblue;
-    outline: none;
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  padding: 4px 4px 4px 4px;
+  background-color: white;
+  box-shadow: 0px 0px 10px 10px aliceblue inset;
+  text-shadow: 1px 1px 2px rgba(161, 90, 90, 0.25);
+  border: 1px solid aliceblue;
+  outline: none;
 }
 
-.LeaveEarlyButton:hover {
-    text-decoration: underline;
-    cursor: pointer;
-    color: rgb(20, 33, 61);
-    /* text-shadow: 0px 0px 2px rgba(161, 90, 90, 0.45); */
+.LeaveEarlyButton:hover:enabled {
+  text-decoration: underline;
+  cursor: pointer;
+  color: rgb(20, 33, 61);
+  /* text-shadow: 0px 0px 2px rgba(161, 90, 90, 0.45); */
+}
+
+@media only screen and (max-width: 600px) {
+  .PrizeAmountsList {
+    /* border: 1px solid red; */
+    margin-left: -30px;
+    border: none;
+    padding-bottom: 5px;
+  }
+
+  .LeaveEarlyText {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    padding-top: 10px;
+  }
 }
