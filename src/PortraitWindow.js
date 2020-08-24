@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import './PortraitWindow.css'
-import image from './images/image1.jpg'
-import audience_background from './images/audience_background.png'
+import audienceBackground from './images/audience_background.png'
+import player from './images/player.png'
+import correctIcon from './images/correct_icon.png'
 import BarChart from './BarChart.js'
 
-export default function PortraitWindow({ imagePath, lastCorrectAnswer, answeredCorrectly, papSuggestedAnswer, askTheAudienceInfo, fiftyFiftyActive }) {
+export default function PortraitWindow({ imagePath, lastCorrectAnswer, answeredCorrectly, papSuggestedAnswer, papComment, askTheAudienceInfo, fiftyFiftyActive }) {
 
     const positiveFeedback = ["Good job!", "Congratulations!", "Nice one!", "That's right!", "Excellent!"];
     const negativeFeedback = ["Hard luck!", "Uh-oh...", "Oops...", "Unlucky!"];
@@ -23,7 +24,7 @@ export default function PortraitWindow({ imagePath, lastCorrectAnswer, answeredC
     }, [lastCorrectAnswer]);
 
     const styles = {
-        backgroundImage: `url(${audience_background})`,
+        backgroundImage: `url(${audienceBackground})`,
         backgroundRepeat: "repeat-x",
         backgroundSize: "auto 100%"
         // backgroundSize: "100% 100%",
@@ -49,10 +50,14 @@ export default function PortraitWindow({ imagePath, lastCorrectAnswer, answeredC
                    </>
             } */}
             {askTheAudienceInfo.active && <BarChart className="BarChart" yValues={askTheAudienceInfo.heights} />}
+            <div className="PortraitWindowContent">
+            <img src={player} />
             {(!papSuggestedAnswer && lastCorrectAnswer && <p className="PortraitWindowText">{feedbackComment} The answer was <span className="PrevCorrectAnswer">{lastCorrectAnswer}</span></p>)}
-            {(papSuggestedAnswer && <p className="PortraitWindowText">"I'd say the answer is <span className="PapSuggestedAnswer">{papSuggestedAnswer}</span>"</p>)}
+            {(papSuggestedAnswer && <p className="PortraitWindowText"><i>"{papComment}<span className="PapSuggestedAnswer">{papSuggestedAnswer}</span>."</i></p>)}
 
-            {playAnimation && !papSuggestedAnswer && !askTheAudienceInfo.active && !fiftyFiftyActive && <p className="CorrectAnswerIcon" key={Math.random()}>YUH</p>}
+            {/* {playAnimation && !papSuggestedAnswer && !askTheAudienceInfo.active && !fiftyFiftyActive && <p className="CorrectAnswerIcon" key={Math.random()}>YUH</p>} */}
+            {playAnimation && !papSuggestedAnswer && !askTheAudienceInfo.active && !fiftyFiftyActive && <img src={correctIcon} className="CorrectAnswerIcon" key={Math.random()} alt="correct"/>}
+            </div>
         </div>
     )
 

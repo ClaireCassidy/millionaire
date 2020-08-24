@@ -9,7 +9,7 @@ import PortraitWindow from './PortraitWindow';
 const BASE_API_URL = "https://opentdb.com/api.php";
 const NUM_QS = 10;
 const PRIZE_MONEY_INCREMENTS = [500, 1000, 4000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
-const SAFE_INDICES = [0, 3, 6];
+const SAFE_INDICES = [3, 6, 9];
 const NUM_EASY_QS = 3;
 const NUM_MED_QS = 4;
 const NUM_HARD_QS = 3;
@@ -47,6 +47,7 @@ function App() {
 
   const [fiftyFiftyActive, setFiftyFiftyActive] = useState(false);
   const [papSuggestedAnswer, setPapSuggestedAnswer] = useState(null);
+  const [papComment, setPapComment] = useState(null);
   const [askTheAudienceActive, setAskTheAudienceActive] = useState(false);
 
   const [answers, setAnswers] = useState(null);
@@ -241,8 +242,12 @@ function App() {
     },
 
     phoneAFriend: () => {
+
       console.log("Phone-a-Friend Activated");
       console.log("Fifty-fifty active?: " + fiftyFiftyActive);
+
+      let confidence = 0;
+
       if (fiftyFiftyActive) {
 
         const successChance = { // since only 2 options the friend will have a higher success chance than she otherwise would
@@ -251,8 +256,9 @@ function App() {
           hard: 0.65
         }
 
-        console.log("Success chance: " + successChance[curQuestion.difficulty]);
+        confidence = successChance[curQuestion.difficulty];
 
+        console.log("Success chance: " + successChance[curQuestion.difficulty]);
 
         // roll random number and use q difficulty to see if the correct answer will be suggested
         const n = Math.random();
@@ -273,8 +279,6 @@ function App() {
             setPapSuggestedAnswer(answers[suggestedAnswerIndex]);
           }
         }
-
-
       } else { // fifty-fifty not active
 
         const successChance = {
@@ -282,6 +286,8 @@ function App() {
           medium: 0.65,
           hard: 0.35
         }
+
+        confidence = successChance[curQuestion.difficulty];
 
         console.log("Success chance: " + successChance[curQuestion.difficulty]);
 
@@ -299,6 +305,10 @@ function App() {
           setPapSuggestedAnswer(curQuestion.incorrectAnswers[index]);
         }
       }
+
+      // add the comment
+      setPapComment(getPapComment(confidence))
+
       lifelineSetters.disablePhoneAFriend();
     },
 
@@ -322,6 +332,34 @@ function App() {
 
       lifelineSetters.disableAskTheAudience();
     }
+  }
+
+  const getPapComment = (confidence) => {
+    
+    console.log("Confidence: "+confidence);
+
+    const confidenceComments = {
+      low: ["I really haven't a clue... Maybe ", "Honestly, it's a stab in the dark, but try ", "I don't know, but I'd guess "],
+      medium: ["I have a suspicion the answer is ", "I'm fairly confident it's ", "Hmm ... that's a tough one, but try "],
+      high: ["It's almost certainly ", "I'm confident the answer is ", "I think I know this one! "],
+    }
+
+    const numOptions = 3;
+    const index = Math.floor(Math.random() * numOptions);
+
+    if (confidence <= 1 && confidence >= 0.7) {
+      console.log("High");
+      return (confidenceComments.high[index]);
+    } else if (confidence >= 0.4) {
+      console.log("Medium");
+      return (confidenceComments.medium[index]);
+    } else if (confidence >= 0) {
+      console.log("Low");
+      return (confidenceComments.low[index]);
+    }
+
+    return null;
+
   }
 
   const generateAskTheAudiencePercentages = (fiftyFiftyActive, questionDifficulty) => {
@@ -396,92 +434,6 @@ function App() {
     }
 }
 
-  // const lifelineFunctions = {
-  //   fiftyFifty: () => {
-  //     console.log("Fifty Fifty Activated");
-  //     //console.log(disabledAnswersIndices)
-  //     console.log("Disabling answers \"" + answers[disabledAnswersIndices[0]] + ", \"" + answers[disabledAnswersIndices[1]] + "\"")
-  //     setFiftyFiftyActive(true);
-  //     lifelineSetters.disableFiftyFifty();
-  //   },
-
-  //   phoneAFriend: () => {
-  //     console.log("Phone a Friend Activated");
-  //     console.log("50:50 active: " + fiftyFiftyActive);
-  //     if (fiftyFiftyActive) {
-  //       const successChance = { // since only 2 options the friend will have a higher success chance than she otherwise would
-  //         easy: 0.9,
-  //         medium: 0.75,
-  //         hard: 0.65
-  //       }
-
-  //       console.log("Success chance: " + successChance[difficulty]);
-
-  //       // roll random number and use q difficulty to see if the correct answer will be suggested
-  //       const n = Math.random();
-  //       console.log("Rolled: " + n + " [" + (n <= successChance[difficulty] ? "success" : "fail") + "]");
-  //       if (n <= successChance[difficulty]) {
-  //         console.log("Suggests: " + correctAnswer);
-  //         setPapSuggestedAnswer(correctAnswer);
-  //       } else {
-  //         // get the index of the still-enabled incorrect answer
-  //         const correctAnswerIndex = answers.indexOf(correctAnswer);
-  //         let suggestedAnswerIndex = -1;
-  //         for (let i = 0; i < answers.length; i++) {
-  //           if (i != correctAnswerIndex && disabledAnswersIndices.indexOf(i) === -1) suggestedAnswerIndex = i; break;
-  //         }
-  //         if (suggestedAnswerIndex === -1) console.log("Something went wrong")
-  //         else {
-  //           console.log("Suggests: " + answers[suggestedAnswerIndex]);
-  //           setPapSuggestedAnswer(answers[suggestedAnswerIndex]);
-  //         }
-  //       }
-  //     } else {    // fifty-fifty not active
-  //       const successChance = {
-  //         easy: 0.85,
-  //         medium: 0.65,
-  //         hard: 0.35
-  //       }
-
-  //       console.log("Success chance: " + successChance[difficulty]);
-
-  //       // now roll a random number and use the question difficulty success chance to determine whether the friend will suggest the correct answer
-  //       const n = Math.random();
-  //       console.log("Rolled: " + n + " [" + (n <= successChance[difficulty] ? "success" : "fail") + "]");
-  //       if (n <= successChance[difficulty]) {
-  //         console.log("Suggests: " + correctAnswer);
-  //         setPapSuggestedAnswer(correctAnswer);
-  //       } else {
-  //         // pull one of the incorrect answers at random
-  //         const index = Math.floor(Math.random() * 3);
-  //         console.log("Suggests: " + incorrectAnswers[index]);
-  //         setPapSuggestedAnswer(incorrectAnswers[index]);
-  //       }
-  //     }
-  //     lifelineSetters.disablePhoneAFriend();
-  //   },
-
-  //   askTheAudience: () => {
-  //     console.log("Ask the Audience Activated");
-
-  //     setAskTheAudienceActive(true);
-  //     //setAskTheAudienceHeights([0.25, 0.3, 0.25, 0.1]);
-  //     // returns object in the form {correctAnswer%age: ..., [incorrectAnswerPercentages ... ]}
-  //     // So we need to map these percentages back to the A, B, C, D answer they correspond to
-  //     // Really we just need to note the position of the Correct answer, and can assign incorrect answer percentages arbitrarily among the remaining answers
-  //     const answerPercentages = generateAskTheAudiencePercentages(fiftyFiftyActive, difficulty);
-  //     console.log(JSON.stringify(answerPercentages));
-  //     const correctAnswerIndex = answers.indexOf(correctAnswer);
-  //     console.log(`Correct Answer Index: ${correctAnswerIndex}`);
-  //     let orderedAnswerPercentages = [...answerPercentages.wrongAnswerPercentages]
-  //     orderedAnswerPercentages.splice(correctAnswerIndex, 0, answerPercentages.correctAnswerPercentage);
-  //     console.log(orderedAnswerPercentages);
-  //     setAskTheAudienceHeights(orderedAnswerPercentages);
-
-  //     lifelineSetters.disableAskTheAudience();
-  //   }
-  // }
-
   return (
     <>
       {curQuestion ?
@@ -494,6 +446,7 @@ function App() {
               lastCorrectAnswer={lastCorrectAnswer}
               answeredCorrectly={curQuestionIndex !== 0 && !gameOver}
               papSuggestedAnswer={papSuggestedAnswer}
+              papComment={papComment}
               askTheAudienceInfo={{
                 active: askTheAudienceActive,
                 heights: askTheAudienceHeights
@@ -520,12 +473,13 @@ function App() {
                 increments: PRIZE_MONEY_INCREMENTS,
                 safeIndices: SAFE_INDICES,
                 curQuestionIndex: curQuestionIndex,
-                numQs: NUM_QS
+                numQs: NUM_QS,
               }}
               lifelinesInfo={{
                 lifelineFunctions: lifelineFunctions,
                 lifelinesRemaining: lifelinesRemaining
               }}
+              userRetire={userRetire}
             />
           </div>
         </div>
@@ -630,48 +584,3 @@ const generateDisabledAnswersIndices = (answers, q) => {
 }
 
 export default App;
-
-
-
-  // return (
-  //   <div className="App">
-  //     {/* {console.log("Done?: " + doneLoadingQuestions(loadingStates))} */}
-  //     {debug && <button onClick={() => setCurQuestionIndex(9)}>Skip</button>}
-
-  //     {(curQuestion
-  //       ?
-  //       (allQuestionsAnswered ?
-  //         <>
-  //           <h2>Congrats!</h2>
-  //           <p>You're a Millionaire! :)</p>
-  //           <button onClick={() => reload()}>Play Again</button>
-  //         </>
-  //         :
-  //         <>
-  //           <QuestionDisplay className="QuestionDisplay"
-  //             question={curQuestion.questionText}
-  //             correctAnswer={curQuestion.correctAnswer}
-  //             incorrectAnswers={curQuestion.incorrectAnswers}
-  //             difficulty={curQuestion.difficulty}
-  //             handleSelection={handleSelection}
-  //             answerButtonsDisabled={answerButtonsDisabled}
-  //             lifelineSetters={lifelineSetters}
-  //             lifelinesRemaining={lifelinesRemaining}
-  //           />
-  //           <SidePanel className="SidePanel"
-  //             increments={PRIZE_MONEY_INCREMENTS}
-  //             safeIndices={SAFE_INDICES}
-  //             curQuestionIndex={curQuestionIndex}
-  //             numQs={NUM_QS}
-  //           />
-  //           {!gameOver && lastCorrectAnswer && <p><b>Correct!</b> The answer was {lastCorrectAnswer}</p>}
-  //           {gameOver && <p>{!userRetired && <b>Incorrect!</b>} The answer was {curQuestion.correctAnswer}</p>}
-  //           {gameOver && <h3><b>Game Over!</b> Your winnings are <b>{(!userRetired && curMinCash)}{(userRetired && curCash)}</b></h3>}
-  //           {gameOver && <button onClick={() => reload()}>Replay</button>}
-  //           {!gameOver && <button onClick={() => userRetire()}>Leave w/ cash</button>}
-  //           <p>Current Cash: <b>{curCash}</b>, Cur Min Cash: <b>{curMinCash}</b></p>
-  //         </>)
-  //       : 
-  //       <p>Loading...</p>)}
-  //   </div>
-  // );

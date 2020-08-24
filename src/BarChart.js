@@ -1,5 +1,6 @@
 import React from 'react'
 import Bar from './Bar'
+import './BarChart.css'
 
 export default function BarChart({yValues}) {
 
@@ -12,7 +13,7 @@ export default function BarChart({yValues}) {
         justifyContent: "center",
         alignContent: "center",
         border: "1px solid yellow",
-        padding: "10px"
+        padding: "10px",
     }
 
     return (
