@@ -30,6 +30,6 @@
     color: rgb(252, 163, 17);
 }
 
-.AnsButton:disabled {
-    
+._DebugCorrect {
+    font-style: italic;
 }

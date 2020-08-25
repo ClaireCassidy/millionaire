@@ -32,10 +32,10 @@ const GAME_OVER_TYPES = {
 
 function App() {
   // DEBUG
-  const [debug, setDebug] = useState(true);
+  const [debug, setDebug] = useState(false);
 
   const [questions, setQuestions] = useState([]);
-  // track progress of the individual API calls
+  // track progress of the individual API calls (one call per difficulty category)
   const [loadingStates, setloadingStates] = useState({
     easy: true,
     medium: true,
@@ -48,11 +48,8 @@ function App() {
   const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
   // Track the last correct answer for printing
   const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null);
-  // track the cash the user has currently accumulated and the 'safety net' cash prize
-  const [curCash, setCurCash] = useState(0);
-  const [curMinCash, setCurMinCash] = useState(0);
   // Toggling this triggers the use effect which fetches new questions
-  const [gameOver, setGameOver] = useState(true);
+  const [gameOver, setGameOver] = useState(false);
   // Toggle this to set if the user voluntarily left the game (game ends but they get to keep the current cash value vs. nearest safety net)
   const [userRetired, setUserRetired] = useState(false);
   // Governs whether or not answer buttons should be active
@@ -76,16 +73,12 @@ function App() {
 
   // Generates query strings, queries the API, and sets the app questions as per the API response
   useEffect(() => {
-    // console.log("HOOK load questions executing ... ")
-
     loadNewQuestions();
   }, []);
 
   // prompt update of question displayed; occurs once when loading complete to load first question, then again whenever the curQuestionIndex is modified (i.e. by answering a question)
   useEffect(() => {
-    // console.log("HOOK update question displayed ... ")
 
-    // console.log("Loading states changed, checking ... " + JSON.stringify(loadingStates));
     if (doneLoadingQuestions(loadingStates)) {
       if (initialLoad) {
         // if this is the inital loading of a q, we need to sort the qs
@@ -95,25 +88,29 @@ function App() {
           hard: 2,
         };
 
+        // Responses may be in incorrect order wrt difficulty, so sort before appending new questions
         let qs = questions.slice().sort((a, b) => {
           return questionOrder[a.difficulty] - questionOrder[b.difficulty];
         });
-        //console.log("Q's Sorted: "+JSON.stringify(qs));
+
         setQuestions(qs);
         setCurQuestion(qs[0]);
         setInitialLoad(false);
 
+        // Randomise the order answers are displayed (otherwise correct answer always first)
         const randomOrder = computeRandomOrder(
           [qs[0].correctAnswer, ...qs[0].incorrectAnswers].length
         );
         const reordered = reorderAnswers(randomOrder, qs[0]);
         setAnswers(reordered);
+
+        // Pull two random incorrect answers to disable on 50:50 activation
         setDisabledAnswersIndices(
           generateDisabledAnswersIndices(reordered, qs[0])
         );
+
       } else {
         let q = questions[curQuestionIndex];
-        console.log(q);
 
         // update the current question
         setCurQuestion(q);
@@ -135,8 +132,6 @@ function App() {
     return textArea.value;
   }
 
-  // TODO: Don't check that incoming responses are in the order EASY, MEDIUM, HARD, so we accidentally put hard q's first, followed by med etc.
-  // Sol: Sort questions according to difficulty when pushing to questions
   const loadNewQuestions = () => {
     // generate query text based on number of questions of specified difficulty required
     const queries = generateApiQueries({
@@ -161,16 +156,12 @@ function App() {
             );
           });
 
-          // console.log(qsReceived);
           const difficulty = qsReceived[0].difficulty;
-          // console.log("received q's for difficulty: "+difficulty);
 
           // push the Question objects to the question pool
           setQuestions((questions) => [...questions, ...qsReceived]);
 
           // we're finished loading questions at the current difficulty level
-          // console.log(JSON.stringify(loadingStates))
-          // console.log("Setting difficulty for "+difficulty+" ... ")
           setloadingStates((loadingStates) => ({
             ...loadingStates,
             [difficulty]: false,
@@ -183,34 +174,38 @@ function App() {
   };
 
   const reload = () => {
+    //reset app state
     console.log("RELOADING");
     setQuestions([]);
-    setCurQuestion(null);
-    setCurQuestionIndex(0);
-    setInitialLoad(true);
     setloadingStates({ easy: true, medium: true, hard: true });
+    setInitialLoad(true);
+    setCurQuestionIndex(0);
+    setCurQuestion(null);
+    setAllQuestionsAnswered(false);
+    setLastCorrectAnswer(null);
+    setGameOver(false);
+    setUserRetired(false);
+    setAnswerButtonsDisabled(false);
     setLifelinesRemaining({
       fiftyFifty: true,
       phoneAFriend: true,
       askTheAudience: true,
     });
-    setAllQuestionsAnswered(false);
-    setCurCash(0);
-    setCurMinCash(0);
-    setAnswerButtonsDisabled(false);
-    setLastCorrectAnswer(null);
-    setGameOver(false);
-    setUserRetired(false);
+
+    
     loadNewQuestions();
   };
 
+  // The user voluntarily quit (takes all money they received so far)
   const userRetire = () => {
     setUserRetired(true);
     setGameOver(true);
     setAnswerButtonsDisabled(true);
   };
 
+  // Called when user picks an answer
   const handleSelection = (answeredCorrectly) => {
+
     setLastCorrectAnswer(curQuestion.correctAnswer);
 
     if (answeredCorrectly) {
@@ -220,34 +215,26 @@ function App() {
       console.log("INCORRECTLY ANSWERED");
       setGameOver(true);
       setAnswerButtonsDisabled(true);
-      //reload();
     }
+
   };
 
   const gotoNextQuestion = () => {
-    if (curQuestionIndex < NUM_QS - 1) {
-      // update the prize money the player has accumulated
-      setCurCash(PRIZE_MONEY_INCREMENTS[curQuestionIndex]);
 
-      const index = SAFE_INDICES.indexOf(curQuestionIndex);
-      if (index >= 0) {
-        console.log("hit safety net");
-        setCurMinCash(PRIZE_MONEY_INCREMENTS[SAFE_INDICES[index]]);
-      }
+    if (curQuestionIndex < NUM_QS - 1) { // if qs left to answer
 
       // update the question to be displayed
       setCurQuestionIndex((curQuestionIndex) => curQuestionIndex + 1);
 
-      //reset state from previous question
+      //reset lifeline activity state 
       setFiftyFiftyActive(false);
       setAskTheAudienceActive(false);
       setPapSuggestedAnswer(null);
-    } else {
+
+    } else { // user wins 
       setAllQuestionsAnswered(true);
       setGameOver(true);
-      console.log("End of q's");
     }
-    //console.log(curQuestionIndex);
   };
 
   const lifelineSetters = {
@@ -274,23 +261,18 @@ function App() {
   const lifelineFunctions = {
     fiftyFifty: () => {
       console.log("Fifty-Fifty Activated");
-      setFiftyFiftyActive(true);
+      setFiftyFiftyActive(true);  // disables two random incorrect answers
       lifelineSetters.disableFiftyFifty();
-
-      // console.log("!!!!"+JSON.stringify(curQuestion));
-      // console.log("\tanswers: "+answers);
-      // console.log("\tdisabled indices: "+disabledAnswersIndices);
     },
 
     phoneAFriend: () => {
       console.log("Phone-a-Friend Activated");
       console.log("Fifty-fifty active?: " + fiftyFiftyActive);
 
-      let confidence = 0;
+      let confidence = 0; // Determines printed comment accompanying answer suggestion
 
-      if (fiftyFiftyActive) {
-        const successChance = {
-          // since only 2 options the friend will have a higher success chance than she otherwise would
+      if (fiftyFiftyActive) { // greater success chance
+        const successChance = { // percentage chance to guess correct answer
           easy: 0.9,
           medium: 0.75,
           hard: 0.65,
@@ -298,21 +280,12 @@ function App() {
 
         confidence = successChance[curQuestion.difficulty];
 
-        console.log("Success chance: " + successChance[curQuestion.difficulty]);
-
         // roll random number and use q difficulty to see if the correct answer will be suggested
         const n = Math.random();
-        console.log(
-          "Rolled: " +
-            n +
-            " [" +
-            (n <= successChance[curQuestion.difficulty] ? "success" : "fail") +
-            "]"
-        );
-        if (n <= successChance[curQuestion.difficulty]) {
-          console.log("Suggests: " + curQuestion.correctAnswer);
+
+        if (n <= successChance[curQuestion.difficulty]) { // success
           setPapSuggestedAnswer(curQuestion.correctAnswer);
-        } else {
+        } else {  // failure; suggest remaining enabled incorrect answer
           // get the index of the still-enabled incorrect answer
           const correctAnswerIndex = answers.indexOf(curQuestion.correctAnswer);
           let suggestedAnswerIndex = -1;
@@ -326,14 +299,12 @@ function App() {
           }
           if (suggestedAnswerIndex === -1) console.log("Something went wrong");
           else {
-            console.log("Suggests: " + answers[suggestedAnswerIndex]);
             setPapSuggestedAnswer(answers[suggestedAnswerIndex]);
           }
         }
-      } else {
-        // fifty-fifty not active
+      } else { // fifty-fifty not active
 
-        const successChance = {
+        const successChance = { // lower chance but always higher than pure guess (otherwise lifeline unhelpful)
           easy: 0.85,
           medium: 0.65,
           hard: 0.35,
@@ -341,30 +312,20 @@ function App() {
 
         confidence = successChance[curQuestion.difficulty];
 
-        console.log("Success chance: " + successChance[curQuestion.difficulty]);
-
         // now roll a random number and use the question difficulty success chance to determine whether the friend will suggest the correct answer
 
         const n = Math.random();
-        console.log(
-          "Rolled: " +
-            n +
-            " [" +
-            (n <= successChance[curQuestion.difficulty] ? "success" : "fail") +
-            "]"
-        );
+
         if (n <= successChance[curQuestion.difficulty]) {
-          console.log("Suggests: " + curQuestion.correctAnswer);
           setPapSuggestedAnswer(curQuestion.correctAnswer);
         } else {
           // pull one of the incorrect answers at random
           const index = Math.floor(Math.random() * 3);
-          console.log("Suggests: " + curQuestion.incorrectAnswers[index]);
           setPapSuggestedAnswer(curQuestion.incorrectAnswers[index]);
         }
       }
 
-      // add the comment
+      // add the comment to be displayed alongside answer suggestion
       setPapComment(getPapComment(confidence));
 
       lifelineSetters.disablePhoneAFriend();
@@ -374,14 +335,17 @@ function App() {
       console.log("Ask-the-Audience Activated");
 
       setAskTheAudienceActive(true);
+
+      // generate bar-chart heights
       const answerPercentages = generateAskTheAudiencePercentages(
         fiftyFiftyActive,
         curQuestion.difficulty
       );
-      console.log(JSON.stringify(answerPercentages));
+
 
       const correctAnswerIndex = answers.indexOf(curQuestion.correctAnswer);
-      console.log(`Correct Answer Index: ${correctAnswerIndex}`);
+
+      // reorder the heights received based on their corresponding position in the displayed answer buttons
       let orderedAnswerPercentages = [
         ...answerPercentages.wrongAnswerPercentages,
       ];
@@ -390,10 +354,7 @@ function App() {
         0,
         answerPercentages.correctAnswerPercentage
       );
-      console.log(`A: ${orderedAnswerPercentages[0]}
-        \nB: ${orderedAnswerPercentages[1]}
-        \nC: ${orderedAnswerPercentages[2]}
-        \nD: ${orderedAnswerPercentages[3]}`);
+
       setAskTheAudienceHeights(orderedAnswerPercentages);
 
       lifelineSetters.disableAskTheAudience();
@@ -401,7 +362,6 @@ function App() {
   };
 
   const getPapComment = (confidence) => {
-    console.log("Confidence: " + confidence);
 
     const confidenceComments = {
       low: [
@@ -424,6 +384,7 @@ function App() {
     const numOptions = 3;
     const index = Math.floor(Math.random() * numOptions);
 
+    // pull a random comment based on the confidence level of the friend
     if (confidence <= 1 && confidence >= 0.7) {
       console.log("High");
       return confidenceComments.high[index];
@@ -438,6 +399,7 @@ function App() {
     return null;
   };
 
+  // win amount on generic loss, nearest safe amount before curQuestion value
   const getNearestSafetyNetAmount = (curQuestionIndex, safeIndices, prizeMoneyIncrements) => {
     
     let targetIndex = -1;
@@ -458,12 +420,9 @@ function App() {
     fiftyFiftyActive,
     questionDifficulty
   ) => {
-    console.log(
-      `Generating Ask the Audience Percentages ...\n\tFifty-Fifty Active: ${fiftyFiftyActive}\n\tQuestion Difficulty: ${questionDifficulty}`
-    );
 
     // Audience percentage a function of question difficulty & number of possible choices
-    if (fiftyFiftyActive) {
+    if (fiftyFiftyActive) { // biases used to offset result and produce more variability
       const biases = {
         easy: {
           offset: 0.8,
@@ -486,7 +445,6 @@ function App() {
       const correctAnswerPercentage = offset + bias;
       const incorrectAnswerPercentage = 1 - correctAnswerPercentage;
 
-      // console.log("Offset: "+)
       return {
         correctAnswerPercentage: correctAnswerPercentage,
         wrongAnswerPercentages: [incorrectAnswerPercentage],
@@ -535,14 +493,6 @@ function App() {
     <>
       {curQuestion ? (
         <div className="App">
-          {/* (gameOver ? 
-                (userRetired ? 
-                  [displayGameOver WITH prizeIncrements[curQIndex - 1]] 
-                : (allQuestionsAnswered ? [displayCongratulationsMillionaire] 
-                  : [displayNormalGameOver i.e nearestSafeIndexAmount])
-                )
-              : [normal] 
-              ) */}
           <div className="MainWindow">
             {gameOver ? (
               <GameOverScreen 
@@ -605,9 +555,9 @@ function App() {
   );
 }
 
+// check if all the API calls have returned
 const doneLoadingQuestions = (loadingStates) => {
   for (let difficulty in loadingStates) {
-    //console.log(difficulty+": "+loadingStates[difficulty])
     if (loadingStates[difficulty]) return false;
   }
 
@@ -616,7 +566,7 @@ const doneLoadingQuestions = (loadingStates) => {
 
 const generateApiQueries = (request) => {
   // request an object of the form {easy: n1, medium: n2, hard: n3}
-  // returns an array of objects containing the queries for each difficulty level
+  // returns an array of objects containing the query strings for each set of questions at the given difficulty levels
   if (typeof request === "object") {
     const queries = [];
 
@@ -625,7 +575,6 @@ const generateApiQueries = (request) => {
       const amount = request[key];
 
       const query = `${BASE_API_URL}?amount=${amount}&difficulty=${difficulty}&type=multiple`;
-      //console.log(query);
       queries.push(query);
     });
 
@@ -658,6 +607,7 @@ class Question {
   }
 }
 
+// used to randomise order answers appear (otherwise correct answer always first)
 const computeRandomOrder = (length) => {
   let orderArr = new Array(length);
   for (let i = 0; i < orderArr.length; i++) {
@@ -668,6 +618,7 @@ const computeRandomOrder = (length) => {
   return orderArr;
 };
 
+// used to the answers according to the indexing array produced by the above function
 const reorderAnswers = (indexingArray, question) => {
   let ans = [];
 
@@ -677,10 +628,10 @@ const reorderAnswers = (indexingArray, question) => {
     );
   }
 
-  // console.log(ans);
   return ans;
 };
 
+// returns the indices of the answers to disable if 50:50 is activated
 const generateDisabledAnswersIndices = (answers, q) => {
   console.log("From generate... : \n" + q);
   // Just disable the first two answers in the incorrectAnswers prop (they'll be in a random spot in answers)
@@ -690,18 +641,7 @@ const generateDisabledAnswersIndices = (answers, q) => {
     .sort(() => 0.5 - Math.random());
   indices.push(answers.indexOf(incorrectRandomised[0]));
   indices.push(answers.indexOf(incorrectRandomised[1]));
-  console.log(
-    "correct answer: " +
-      q.correctAnswer +
-      ", disabling indices " +
-      indices +
-      " (" +
-      answers[indices[0]] +
-      ", " +
-      answers[indices[1]] +
-      ")"
-  );
-  // setDisabledAnswersIndices(indices);
+
   return indices;
 };
 

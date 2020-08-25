@@ -4,8 +4,7 @@ import './AnswerButton.css'
 export default function AnswerButton({answer, isCorrect, selectAnswer, disabled}) {
     return (
     	<div className="AnswerButtonContainer">
-            {isCorrect && <button className="AnsButton" onClick={() => {selectAnswer(true)}} disabled={disabled}><i>{answer}</i></button>}
-            {!isCorrect && <button className="AnsButton" onClick={() => {selectAnswer(false)}} disabled={disabled}><>{answer}</></button>}
+            <button className={"AnsButton "+(isCorrect ? "_DebugCorrect" : "")} onClick={() => {selectAnswer(isCorrect)}} disabled={disabled}>{answer}</button>
         </div>
     )
 }

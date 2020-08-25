@@ -1,7 +1,6 @@
 .GameOverScreenContainer {
   width: 100%;
   height: 100%;
-  /* border: 1px solid red; */
   border-right: 2px double rgba(255, 255, 255, 0.5);
   text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   text-align: center;
@@ -17,14 +16,6 @@
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  /* background: rgb(255, 170, 74);
-  background: radial-gradient(
-    circle,
-    rgba(255, 170, 74, 1) 0%,
-    rgba(255, 122, 70, 1) 130%
-  ); */
-  /* box-shadow: 0px 0px 100px rgb(255, 0, 0) inset; */
-
   background-image: linear-gradient(to left top, #008793, #00bf72, #a8eb12);
 }
 
@@ -44,8 +35,6 @@
 .Congratulations {
   font-size: 3em;
   padding-bottom: 5px;
-
-  /* border-bottom: 5px solid rgb(238, 238, 238); */
   letter-spacing: 0.12em;
   opacity: 1;
   animation: fadeIn 2s;
@@ -100,7 +89,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* animation: fadeIn 1s; */
 }
 
 .RetireHeader {
@@ -109,6 +97,11 @@
   opacity: 1;
   animation: wait 1s, fadeIn 1s;
   animation-delay: 0s, 1s;
+}
+
+.Fade {
+  animation: wait 2s, fadeIn 1s;
+  animation-delay: 0s, 2s;
 }
 
 .RetireSubtitle {

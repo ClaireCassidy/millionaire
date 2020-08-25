@@ -9,21 +9,6 @@ import LifelineDisplay from './LifelineDisplay';
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
-    // const getNearestSafeAmount = (curQuestionIndex, safeIndices, prizeIncrements) => {
-    //     let amount = 0;
-
-    //     // console.log("CurQuestionIndex: "+curQuestionIndex);
-    //     // console.log(`CurQuestionIndex: ${curQuestionIndex}
-    //     //     \nsafeIndices: ${safeIndices}
-    //     //     \nprizeIncrements: ${prizeIncrements}`);
-
-    //     // for (let i=0; i<curQuestionIndex; i++) {
-    //     //     if (safeIndices.indexOf(i) >= 0) amount = prizeIncrements[i];
-    //     // }
-
-    //     return amount;
-    // }
-
     return (
         <div className={"SidePanelContainer"+(disabled ? " Disabled" : "")}>
             <div className="PrizeAmountsDiv">

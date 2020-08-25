@@ -1,31 +1,16 @@
-/* .Container img {
-
-    width: 100px;
-    height: 100px;
-}
-*/
 
 .PortraitWindowContainer {
     height: 100%;
-    /* border: 1px solid white; */
     border-right: 2px double rgba(255,255,255,0.5);
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
     padding: 10px;
-    /* border: 1px solid greenyellow; */
 }
-
-/* .PlayerImage {
-    position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-} */
 
 .PortraitWindowContent {
     width: 100%;
     height: 100%;
-    /* border: 1px solid green; */
     margin: 0px;
     display: flex;
     flex-direction: column;
@@ -34,22 +19,17 @@
 }
 
 .PortraitWindowContent > img {
-    /* border: 1px solid yellow; */
     max-width: 200px;
     margin: 0px;
-    /* border: 1px solid rgb(136, 57, 57); */
     justify-self: center;
     align-self: center;
 }
 
 .PortraitWindowText {
-    /* border: 1px solid red; */
     margin: 0px;
     min-width: 80%;
     padding: 4px 4px 4px 15px;
     font-size: 0.9em;
-    /* position: absolute; */
-    /* display: flex; */
     flex-basis: 10%;
     color: white;
     background-color: black;
@@ -57,7 +37,6 @@
 } 
 
 .PapSuggestedAnswer {
-    /* font-weight: 600; */
     text-shadow: 0px 0px 3px rgb(252, 163, 17);
     font-weight: bold;
     font-style: italic;
@@ -75,14 +54,11 @@
     position: absolute;
     margin-left: auto;
     margin-top: auto;
-    /* border: 1px solid red; */
     opacity: 0;
     animation: fadeInOut 1s;
 }
 
 .BarChart {
-    /* margin: auto; */
-    /* justify-self: flex-end !important ; */
     align-self: flex-start;
     position: absolute;
     margin-left: auto;

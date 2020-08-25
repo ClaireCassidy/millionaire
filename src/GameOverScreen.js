@@ -31,7 +31,7 @@ export default function GameOverScreen({
         <div className="RetireScreen">
           <div className="RetireScreenContent">
             <h2 className="RetireHeader">Good Job!</h2>
-            <p className="CorrectAnswerText">The answer was <span className="CorrectAnswer">{correctAnswer}</span></p>
+            <p className="CorrectAnswerText Fade">The answer was <span className="CorrectAnswer">{correctAnswer}</span></p>
             <h3 className="RetireSubtitle">You've walked away with</h3>
             <h3 className="RetireAmount">€ {prettifyNumber(amountWon)}</h3>
             <button className="ReloadButton" onClick={() => reload()}>

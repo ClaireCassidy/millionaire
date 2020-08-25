@@ -8,26 +8,18 @@ export default function LifelineDisplay({ lifelineFunctions, lifelinesRemaining,
 
     return (
         <div className="LifelineDisplayContainer">
+            
             <div className="LifelineDisplayHeaderContainer">
                 <h3 className="LifelineDisplayHeader">Lifelines:</h3>
             </div>
-            {/* <button onClick={() => lifelineFunctions.phoneAFriend()} disabled={!lifelinesRemaining.phoneAFriend}>Phone A Friend</button>
-            <button onClick={() => lifelineFunctions.fiftyFifty()} disabled={!lifelinesRemaining.fiftyFifty}>50:50</button>
-            <button onClick={() => lifelineFunctions.askTheAudience()} disabled={!lifelinesRemaining.askTheAudience}>Ask the Audience</button> */}
-
-            {/* TODO: implement lifelines remaining functionality to disable buttons as above ^ */}
-            {/* <button style={buttonStyles.phoneAFriend} onClick={() => lifelineFunctions.phoneAFriend}>
-                <img src={phoneAFriendIcon}/>
-                </button> */}
-            {/* <img src={phoneAFriendIcon} onClick={() => lifelineFunctions.phoneAFriend()} style={buttonStyles.phoneAFriend}/>
-            <img className="LifelineButton" src={phoneAFriendIcon} onClick={() => lifelineFunctions.phoneAFriend()} title="Phone a friend" disabled={!lifelinesRemaining.phoneAFriend}/>
-            <img className="LifelineButton" src={askTheAudienceIcon} onClick={() => lifelineFunctions.askTheAudience()} title="Ask the audience" disabled={!lifelinesRemaining.askTheAudience}/> */}
+            
             <div className="LifelineButtonsContainer">
                 {console.log("From LifelineDisplay: "+JSON.stringify(lifelinesRemaining))}
                 <input className="LifelineButton" type="image" src={phoneAFriendIcon} onClick={() => lifelineFunctions.phoneAFriend()} title={"Phone a friend"+(!lifelinesRemaining.phoneAFriend ? " (used)":"")} alt="Phone a friend lifeline" disabled={!lifelinesRemaining.phoneAFriend || disabled}/>
                 <input className="LifelineButton" type="image" src={askTheAudienceIcon} onClick={() => lifelineFunctions.askTheAudience()} title={"Ask the audience"+(!lifelinesRemaining.askTheAudience ? " (used)" : "")} alt="Ask the audience lifeline"  disabled={!lifelinesRemaining.askTheAudience || disabled}/>
                 <input className="LifelineButton" type="image" src={fiftyFiftyIcon} onClick={() => lifelineFunctions.fiftyFifty()} title={"Fifty fifty"+(!lifelinesRemaining.fiftyFifty ? " (used)":"")} alt="Fifty fifty lifeline"  disabled={!lifelinesRemaining.fiftyFifty || disabled}/>
             </div>
+            
         </div>
     )
 }

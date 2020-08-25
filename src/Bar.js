@@ -7,7 +7,6 @@ export default function Bar({ height, index }) {
     const barContainerStyle = {
         display: "flex",
         flexDirection: "column",
-        // border: "1px solid green",
         justifyContent: "flex-end",
         alignItems: "center",
         height: "100%",
@@ -19,7 +18,6 @@ export default function Bar({ height, index }) {
         width: "80%",
         backgroundColor: "red",
         border: "1px solid black",
-        // margin: "0px 10px 10px 0px",
         alignSelf: "center"
     }
 
