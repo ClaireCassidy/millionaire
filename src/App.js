@@ -5,7 +5,6 @@ import QuestionDisplay from "./QuestionDisplay";
 import SidePanel from "./SidePanel";
 import PortraitWindow from "./PortraitWindow";
 import GameOverScreen from "./GameOverScreen";
-// import image from './temp-user-image.jpg';
 
 const BASE_API_URL = "https://opentdb.com/api.php";
 const NUM_QS = 10;
@@ -46,7 +45,7 @@ function App() {
   // track index of cur question being asked
   const [curQuestionIndex, setCurQuestionIndex] = useState(0);
   const [curQuestion, setCurQuestion] = useState(null);
-  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(true);
+  const [allQuestionsAnswered, setAllQuestionsAnswered] = useState(false);
   // Track the last correct answer for printing
   const [lastCorrectAnswer, setLastCorrectAnswer] = useState(null);
   // track the cash the user has currently accumulated and the 'safety net' cash prize
@@ -65,10 +64,7 @@ function App() {
     askTheAudience: true,
   });
 
-  //Hoisted from Question Display
-  // const [answers, setAnswers] = useState(null);
-  // const [disabledAnswersIndices, setDisabledAnswersIndices] = useState([]);
-
+  // Keep track of active lifelines/their info
   const [fiftyFiftyActive, setFiftyFiftyActive] = useState(false);
   const [papSuggestedAnswer, setPapSuggestedAnswer] = useState(null);
   const [papComment, setPapComment] = useState(null);
@@ -442,6 +438,22 @@ function App() {
     return null;
   };
 
+  const getNearestSafetyNetAmount = (curQuestionIndex, safeIndices, prizeMoneyIncrements) => {
+    
+    let targetIndex = -1;
+
+    for (let i=0; i<safeIndices.length; i++) {
+      if (safeIndices[i] >= curQuestionIndex) {
+        return (targetIndex === -1 ? 0 : prizeMoneyIncrements[targetIndex]);
+      }
+
+      targetIndex = safeIndices[i];
+    }
+
+    return prizeMoneyIncrements[safeIndices[safeIndices.length - 1]];
+
+  }
+
   const generateAskTheAudiencePercentages = (
     fiftyFiftyActive,
     questionDifficulty
@@ -532,16 +544,13 @@ function App() {
               : [normal] 
               ) */}
           <div className="MainWindow">
-
-            {/* // @TODO: remove */}
-            {/* <button onClick={() => {setAllQuestionsAnswered(true); setGameOver(true)}}>win</button> */}
-            
             {gameOver ? (
               <GameOverScreen 
                 gameOverType={(allQuestionsAnswered ? (GAME_OVER_TYPES.WIN) : (userRetired ? (GAME_OVER_TYPES.RETIRE) : (GAME_OVER_TYPES.LOSE)))} 
-                amountWon={50}  
+                amountWon={(userRetired ? (curQuestionIndex === 0 ? 0 : PRIZE_MONEY_INCREMENTS[curQuestionIndex-1]) : getNearestSafetyNetAmount(curQuestionIndex, SAFE_INDICES, PRIZE_MONEY_INCREMENTS))}  
                 gameOverTypes={GAME_OVER_TYPES}
                 reload={reload}
+                correctAnswer={curQuestion.correctAnswer}
               />
             ) : (
               <>

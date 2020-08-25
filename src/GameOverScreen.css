@@ -3,9 +3,10 @@
   height: 100%;
   /* border: 1px solid red; */
   border-right: 2px double rgba(255, 255, 255, 0.5);
-  text-shadow: 1px 1px 10px rgba(0,0,0,0.5);
-    text-align: center;
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  text-align: center;
   color: rgb(238, 238, 238);
+  padding: 0px;
 }
 
 .WinScreen {
@@ -16,99 +17,273 @@
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  background: rgb(255, 170, 74);
+  /* background: rgb(255, 170, 74);
   background: radial-gradient(
     circle,
     rgba(255, 170, 74, 1) 0%,
     rgba(255, 122, 70, 1) 130%
-  );
-  box-shadow: 0px 0px 100px rgb(255, 0, 0) inset;
+  ); */
+  /* box-shadow: 0px 0px 100px rgb(255, 0, 0) inset; */
+
+  background-image: linear-gradient(to left top, #008793, #00bf72, #a8eb12);
 }
 
 .WinScreenContent {
-    height: 80%;
-    max-width: 80%;
-    display: flex;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 5%;
-    padding: 0px 5vw 0px 5vw;
-    background-color: rgba(255, 255, 255, 0.1);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  height: 80%;
+  max-width: 80%;
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5%;
+  padding: 0px 5vw 0px 5vw;
+  background-color: rgba(255, 255, 255, 0.1);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .Congratulations {
-    font-size: 3em;
-    padding-bottom: 5px;
-    border-bottom: 5px solid rgb(238, 238, 238);
-    letter-spacing: 0.1em;
+  font-size: 3em;
+  padding-bottom: 5px;
+
+  /* border-bottom: 5px solid rgb(238, 238, 238); */
+  letter-spacing: 0.12em;
+  opacity: 1;
+  animation: fadeIn 2s;
 }
 
-
 .CongratulationsSubtitle {
-    font-size: 1.8em;
-    letter-spacing: 0.07em;
-    font-style: italic;
+  font-size: 1.8em;
+  letter-spacing: 0.07em;
+  font-style: italic;
+  opacity: 1;
+  animation: wait 1.5s, fadeIn 2s;
+  animation-delay: 0s, 1.5s;
 }
 
 .OneMillion {
-    font-size: 4em;
-    font-weight: 800;
-    color: green;
-    letter-spacing: 0.1em;
-    text-shadow: 0px 0px 5px rgb(255, 255, 255);
+  font-size: 4em;
+  font-weight: 800;
+  color: rgb(41, 190, 41);
+  letter-spacing: 0.1em;
+  text-shadow: 0px 0px 8px rgb(255, 255, 255);
+  opacity: 1;
+  animation: wait 3s, fadeInOut 2s infinite;
+  animation-delay: 0s, 3s;
+}
+
+.RetireScreen {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(
+    to right top,
+    #cebfe5,
+    #c3bbe3,
+    #b8b7e0,
+    #acb3dd,
+    #a0afda
+  );
+  opacity: 1;
+  animation: fadeIn 1s;
+}
+
+.RetireScreenContent {
+  width: 80%;
+  height: 65%;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* animation: fadeIn 1s; */
+}
+
+.RetireHeader {
+  font-size: 2em;
+  letter-spacing: 0.1em;
+  opacity: 1;
+  animation: wait 1s, fadeIn 1s;
+  animation-delay: 0s, 1s;
+}
+
+.RetireSubtitle {
+  font-size: 1.2em;
+  letter-spacing: 0.05em;
+  animation: wait 2s, fadeIn 1s;
+  animation-delay: 0s, 2s;
+}
+
+.RetireAmount {
+  font-size: 3em;
+  animation: wait 3s, fadeIn 1s, wordSpread 1s;
+  animation-delay: 0s, 3s, 3s;
+}
+
+.LoseScreen {
+  border: 1px solid rgba(0, 0, 0, 0);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: linear-gradient(
+    to right top,
+    #f28484,
+    #c08354,
+    #877e45,
+    #55734d,
+    #346155
+  );
+}
+
+.LoseScreenContent {
+  width: 65%;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.2);
+  animation: fadeIn 1s;
+}
+
+.LoseScreenHeader {
+  font-size: 2em;
+}
+
+.LoseScreenSubtitle {
+  font-size: 1.2em;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+
+.Gold {
+    color: rgb(252, 190, 90);
+}
+
+.SafetyNetAmount {
+  font-size: 3em;
+  animation: wait 1s, fadeIn 1s, wordSpread 1s;
+  animation-delay: 0s, 1s, 1s;
+}
+
+.CorrectAnswer {
+    font-weight: 600;
+    letter-spacing: 0.05em;
 }
 
 .ReloadButton {
-    width: 80%;
-    padding: 5px;
-    border-radius: 33%;
-    box-shadow: 0px 2px 5px rgba(0,0,0,0.3);
-    border: 1px solid rgba(0,0,0,0.1);
-    outline: none;
+  width: 80%;
+  padding: 5px;
+  border-radius: 33%;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  outline: none;
+  font-weight: 600;
+  letter-spacing: 0.05em;
 }
 
 .ReloadButton:hover {
-    cursor: pointer;
-    color: rgba(0,0,0,0.7);
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.7);
 }
 
 @media only screen and (max-width: 1200px) {
-    .Congratulations {
-        font-size: 2.5em;
-        letter-spacing: 0.05em;
-    }
+  .Congratulations {
+    font-size: 2.5em;
+    letter-spacing: 0.05em;
+  }
 
-    .CongratulationsSubtitle {
-        font-size: 1.3em;
-    }
+  .CongratulationsSubtitle {
+    font-size: 1.3em;
+  }
 
-    .OneMillion {
-        font-size: 2.2em;
-    }
+  .OneMillion {
+    font-size: 2.2em;
+  }
+
+  .LoseScreenHeader {
+    font-size: 1.5em;
+  }
 
 }
 
 @media only screen and (max-width: 900px) {
-    .Congratulations {
-        font-size: 1.7em;
-        letter-spacing: 0.05em;
-    }
+  .Congratulations {
+    font-size: 1.7em;
+    letter-spacing: 0.05em;
+  }
+  .RetireAmount {
+    font-size: 2em;
+  }
 
+  .LoseScreenSubtitle {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 1em;
+  }
+
+  .SafetyNetAmount {
+    font-size: 2em;
+  }
 }
 
 @media only screen and (max-width: 650px) {
-    .Congratulations {
-        font-size: 1.2em;
-        letter-spacing: 0.05em;
-    }
+  .Congratulations {
+    font-size: 1.2em;
+    letter-spacing: 0.05em;
+  }
 
-    .CongratulationsSubtitle {
-        font-size: 1em;
-    }
+  .CongratulationsSubtitle {
+    font-size: 1em;
+  }
 
-    .OneMillion {
-        font-size: 1.5em;
-    }
+  .OneMillion {
+    font-size: 1.5em;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes wait {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes wordSpread {
+  0% {
+    letter-spacing: -1em;
+  }
+  100% {
+    letter-spacing: 0em;
+  }
 }
