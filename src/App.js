@@ -191,7 +191,13 @@ function App() {
       phoneAFriend: true,
       askTheAudience: true,
     });
-
+    setPapSuggestedAnswer(null);
+    setFiftyFiftyActive(false);
+    setPapSuggestedAnswer(null);
+    setAskTheAudienceActive(false);
+    setAnswers(null);
+    setDisabledAnswersIndices([]);
+    setAskTheAudienceHeights([]);
     
     loadNewQuestions();
   };
