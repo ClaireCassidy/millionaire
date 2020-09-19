@@ -3,10 +3,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  /* border: 5px solid yellow; */
 }
 
 .Disabled {
-  opacity: 50%;
+  opacity: 0.5;
 }
 
 .PrizeAmountsDiv {
@@ -15,6 +16,11 @@
   margin: 5px 5px 10px 5px;
   box-shadow: 0px 0px 30px 5px rgba(252, 163, 17, 0.2) inset;
   padding: 10px;
+  /* border: 5px solid red; */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex: 6;
 }
 
 .PrizeAmountsHeader {
@@ -28,6 +34,9 @@
 }
 
 .PrizeAmountsList {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5em;
   list-style-type: none;
   font-weight: normal;
   text-shadow: 1px 0px 2px rgba(255, 255, 255, 0.8);
@@ -61,7 +70,7 @@
 }
 
 .AmountReached {
-  opacity: 40%;
+  opacity: 0.4;
 }
 
 .QuitContainer {
@@ -100,6 +109,16 @@
   text-decoration: underline;
   cursor: pointer;
   color: rgb(20, 33, 61);
+}
+
+.LifelinesContainer {
+  /* border: 2px solid greenyellow; */
+  flex: 2;
+  display: flex;
+  flex-direction: row;
+  height: fit-content;
+  justify-content: center;
+  align-items: center;
 }
 
 @media only screen and (max-width: 600px) {

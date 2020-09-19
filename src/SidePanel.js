@@ -31,11 +31,13 @@ import LifelineDisplay from './LifelineDisplay';
                     <button className="LeaveEarlyButton" onClick={() => userRetire()} disabled={disabled}>Quit</button>
                 </div>
             </div>
+            <div className="LifelinesContainer">
             <LifelineDisplay
                 lifelineFunctions = {lifelinesInfo.lifelineFunctions}
                 lifelinesRemaining = {lifelinesInfo.lifelinesRemaining}
                 disabled = {disabled}
                 />
+                </div>
         </div>
     )
 }
